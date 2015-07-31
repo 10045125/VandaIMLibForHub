@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin">
+
+    <ImageView
+        android:id="@+id/id_chat_text_iv_bg"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:background="@mipmap/other_head" />
+
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/rl"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="4dp"-->
+        <!--android:layout_marginRight="52dp"-->
+        <!--android:layout_toRightOf="@+id/id_chat_text_iv_bg">-->
+
+        <LinearLayout
+            android:id="@+id/id_chat_other_textview_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/id_chat_text_iv_bg"
+            android:layout_gravity="center"
+            android:layout_marginLeft="4dp"
+            android:background="@mipmap/chatfrom_bg_normal"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:orientation="vertical">
+
+            <com.yqritc.recyclerviewmultipleviewtypesadapter.im.view.JustifyTextView
+                android:id="@+id/id_chat_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑1号黑"
+                android:maxWidth="180dp"
+                android:textColor="@color/color_chat_my_textcolor"
+                android:textSize="14sp"
+                android:padding="3dp"/>
+
+        </LinearLayout>
+    <!--</RelativeLayout>-->
+
+    <TextView
+        android:id="@+id/id_chat_textview_status_ok"
+        android:layout_toRightOf="@+id/id_chat_other_textview_ll"
+        android:layout_alignBaseline="@+id/id_chat_other_textview_ll"
+        android:layout_alignBottom="@+id/id_chat_other_textview_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="22已读"
+        android:padding="3dp"
+        android:textColor="@color/color_chat_text_read_color"
+        android:textSize="9sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/id_chat_textview_status_fail"
+        android:layout_toRightOf="@+id/id_chat_other_textview_ll"
+        android:layout_alignBaseline="@+id/id_chat_other_textview_ll"
+        android:layout_alignBottom="@+id/id_chat_other_textview_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送失败"
+        android:drawableLeft="@mipmap/text_left_bg"
+        android:drawablePadding="2dp"
+        android:padding="3dp"
+        android:textColor="@color/color_chat_text_read_color"
+        android:textSize="9sp" />
+
+</RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:orientation="vertical">-->
+
+<!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--android:id="@+id/id_swiperefreshlayout_main"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent">-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomLayout"
+        app:stackFromEnd="true" />
+
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/input_board_bg"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chat_BottomHeight"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/chatBottomLeftLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/showVoiceBtn"
+                    android:layout_width="@dimen/chat_BottomBtnSize"
+                    android:layout_height="@dimen/chat_BottomBtnSize"
+                    android:layout_marginLeft="3dp"
+                    android:background="@mipmap/ic_voice" />
+
+                <!--<Button-->
+                    <!--android:id="@+id/showEmotionBtn"-->
+                    <!--android:layout_width="@dimen/chat_BottomBtnSize"-->
+                    <!--android:layout_height="@dimen/chat_BottomBtnSize"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:background="@mipmap/ic_expression"-->
+                    <!--android:gravity="center" />-->
+
+            </LinearLayout>
+
+            <include layout="@layout/chat_bottom_text_layout"/>
+            <!--<include layout="@layout/chat_bottom_text_layout" />-->
+
+            <!--<include layout="@layout/chat_bottom_record_layout" />-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../AndroidBucket-master/AndroidBucket-master.iml" filepath="$PROJECT_DIR$/../AndroidBucket-master/AndroidBucket-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../VandaIMLibForHub.iml" filepath="$PROJECT_DIR$/../VandaIMLibForHub.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app.iml" filepath="$PROJECT_DIR$/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../viewtypelibrary/viewtypelibrary.iml" filepath="$PROJECT_DIR$/../viewtypelibrary/viewtypelibrary.iml" />
+    </modules>
+  </component>
+</project>

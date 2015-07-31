@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green_light">#ff99cc00</color>
+    <color name="red_light">#ffff4444</color>
+    <color name="blue_light">#ff33b5e5</color>
+    <color name="green_dark">#ff669900</color>
+    <color name="red_dark">#ffcc0000</color>
+    <color name="blue_dark">#ff0099cc</color>
+
+    <color name="color_chat_bg">#efeff4</color>
+
+    <color name="color_chat_my_textcolor">#523637</color>
+    <color name="color_chat_text_read_color">#888888</color>
+
+    <color name="color_chat_name_color">#333333</color>
+    <color name="color_chat_content_color">#989898</color>
+</resources>

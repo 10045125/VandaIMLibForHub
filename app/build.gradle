@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.wzl.wzl_vanda.vandaimlibforhub"
+        minSdkVersion 21
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':AndroidBucket-master')
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile files('libs/avoscloud-push-v3.5.3.jar')
+    compile files('libs/avoscloud-sdk-v3.5.3.jar')
+    compile files('libs/Java-WebSocket-1.2.0-leancloud.jar')
+    compile files('libs/android-async-http-1.4.6.jar')
+    compile files('libs/fastjson.jar')
+    compile files('libs/httpmime-4.2.4.jar')
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile project(':viewtypelibrary')
+}
