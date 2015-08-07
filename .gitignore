@@ -20,3 +20,4 @@ build
 .gradle
 .idea
 /Emojilibrary/Emojilibrary.iml
+/local.properties
