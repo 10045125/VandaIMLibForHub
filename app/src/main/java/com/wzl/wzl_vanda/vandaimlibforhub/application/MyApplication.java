@@ -7,7 +7,13 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMMessageManager;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.callback.AVIMOnlineClientsCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehandler.ClientEventHandler;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehandler.CustomMessageHandler;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.ChatManagerAdapterImpl;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.ConversationManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.PushManager;
@@ -25,6 +31,9 @@ public class MyApplication extends AppApplication {
         super.onCreate();
         mContext = this;
         AVOSCloud.initialize(this, "vh4pa8ly3s9gwt2wksxlg7pefkzmrpppktl6niooy2kcmbvb", "ke5rav8dife2ljg7h1xunj82b3aypjfp6wsk6bpipols8ajq");
+        //AVOSCloud.initialize(this, "pbwl3akrcecuw5v1vot1g0dpdlczo9yvh5hkuwogg6yhczao", "xoavqop80sjjd5ae9o3728zen6fhvaghbpdq1hslsf22p737");
+        AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new CustomMessageHandler());
+        AVIMClient.setClientEventHandler(new ClientEventHandler());
         PushManager.getInstance().init(mContext);
 //        AVObject.registerSubclass(AddRequest.class);
 
@@ -32,7 +41,7 @@ public class MyApplication extends AppApplication {
 
 //        AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 //        final AVIMClient imClient = AVIMClient.getInstance(Utils.getLocalMacAddress(this));
-        initChatManager();
+      //  initChatManager();
 //        ChatManager.getInstance().openClientWithSelfId(Utils.getLocalMacAddress(getContext()),null);
         /*imClient.open(new AVIMClientCallback() {
             @Override

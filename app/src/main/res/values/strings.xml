@@ -7,4 +7,9 @@
     <string name="content_type2">This is sample data for view type 2 - %d</string>
     <string name="content_type3">This is sample data for view type 3</string>
     <string name="drawable_animal_name">animal%d</string>
+    <string name="title_activity_chat_room">ChatRoomActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_create_user">CreateUserActivity</string>
 </resources>
