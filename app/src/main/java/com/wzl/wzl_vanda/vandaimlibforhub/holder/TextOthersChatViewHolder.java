@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.rockerhieu.emojicon.EmojiconTextView;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
 import com.wzl.wzl_vanda.vandaimlibforhub.view.JustifyTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Jam on 04/08/2015.
@@ -23,8 +25,11 @@ public class TextOthersChatViewHolder extends ChatViewBaseHolder {
     @Bind(R.id.id_chat_textview_status_fail)
     TextView idChatTextviewStatusFail;
     @Bind(R.id.id_chat_textview)
-    JustifyTextView idChatTextview;
-
+    EmojiconTextView idChatTextview;
+    @Bind(R.id.id_chat_text_iv_bg)
+    CircleImageView idChatTextIvBg;
+    @Bind(R.id.id_chat_text_tv_name)
+    TextView idChatTextTvName;
 
     public static TextOthersChatViewHolder build(ViewGroup viewGroup) {
         View v = LayoutInflater.from(viewGroup.getContext())

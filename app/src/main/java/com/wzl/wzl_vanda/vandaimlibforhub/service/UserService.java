@@ -1,5 +1,6 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.service;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.avos.avoscloud.AVException;
@@ -10,9 +11,12 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.FollowCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Constant;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.ForMeConversationInfo;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.UserInfo;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.ColoredBitmapProvider;
 
 import java.io.IOException;
@@ -28,10 +32,37 @@ public class UserService {
   public static final int ORDER_UPDATED_AT = 1;
   public static final int ORDER_DISTANCE = 0;
 
+  public static final String USERINFO = "UserInfo";
+  public static final String USERID = "userId";
+  public static final String OBJECTID = "objectId";
+
+
   public static AVUser findUser(String id) throws AVException {
     AVQuery<AVUser> q = AVUser.getQuery(AVUser.class);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     return q.get(id);
+  }
+
+  public static void findUserUrl(String id,FindCallback<AVObject> call) throws AVException{
+    AVQuery<AVObject> query = new AVQuery<AVObject>(USERINFO);
+    query.whereEqualTo(USERID, id);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+    query.findInBackground(call);//q.get(id);
+  }
+
+
+  public static void findUserInConversationAllInfoFromUserID(String userId,FindCallback<AVObject> callback){
+    AVQuery<AVObject> query = new AVQuery<AVObject>(USERINFO);
+    query.whereEqualTo(USERID, userId);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+    query.findInBackground(callback);
+  }
+
+  public static void findUserInConversationAllInfo(String objectId,FindCallback<AVObject> callback){
+    AVQuery<AVObject> query = new AVQuery<AVObject>(USERINFO);
+    query.whereEqualTo(OBJECTID, objectId);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+    query.findInBackground(callback);
   }
 
   public static void findFriendsWithCachePolicy(AVQuery.CachePolicy cachePolicy, FindCallback<AVUser> findCallback) {

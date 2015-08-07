@@ -17,6 +17,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
+import com.wzl.wzl_vanda.vandaimlibforhub.MainActivity;
 import com.wzl.wzl_vanda.vandaimlibforhub.db.RoomsTable;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ConversationType;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageEvent;
@@ -209,10 +210,10 @@ public class ChatManager extends AVIMClientEventHandler {
         roomsTable.increaseUnreadCount(message.getConversationId());
         MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Come);
         eventBus.post(messageEvent);
-//        if (selfId != null && ChatActivity.getCurrentChattingConvid() == null || !ChatActivity.getCurrentChattingConvid().equals(message
-//                .getConversationId())) {
-//            chatManagerAdapter.shouldShowNotification(context, selfId, conversation, message);
-//        }
+        if (selfId != null && MainActivity.getCurrentChattingConvid() == null || !MainActivity.getCurrentChattingConvid().equals(message
+                .getConversationId())) {
+            chatManagerAdapter.shouldShowNotification(context, selfId, conversation, message);
+        }
     }
 
 
@@ -327,4 +328,6 @@ public class ChatManager extends AVIMClientEventHandler {
             }
         });
     }
+
+
 }

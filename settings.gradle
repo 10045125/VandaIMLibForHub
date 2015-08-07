@@ -1,1 +1,1 @@
-include ':app', ':AndroidBucket-master', ':viewtypelibrary'
+include ':app', ':AndroidBucket-master', ':viewtypelibrary', ':Emojilibrary'

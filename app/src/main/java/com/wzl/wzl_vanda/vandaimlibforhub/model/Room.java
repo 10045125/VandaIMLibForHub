@@ -11,6 +11,7 @@ public class Room {
   private AVIMConversation conversation;
   private String conversationId;
   private int unreadCount;
+  private String groupName;
 
   public AVIMTypedMessage getLastMessage() {
     return lastMessage;
@@ -42,5 +43,13 @@ public class Room {
 
   public void setUnreadCount(int unreadCount) {
     this.unreadCount = unreadCount;
+  }
+
+  public String getGroupName(){
+    return groupName;
+  }
+
+  public void setGroupName(String groupName){
+    this.groupName = groupName;
   }
 }

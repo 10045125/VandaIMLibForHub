@@ -4,12 +4,32 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.EmotionHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
+import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
+import com.wzl.wzl_vanda.vandaimlibforhub.view.PlayButton;
 import com.wzl.wzl_vanda.viewtypelibrary.DataBindAdapter;
 import com.wzl.wzl_vanda.viewtypelibrary.DataBinder;
+
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -31,24 +51,53 @@ public class ChatSoundBinder2 extends DataBinder<ChatSoundBinder2.ViewHolder> {
     }
 
     @Override
-    public void bindViewHolder(ViewHolder holder, int position) {
-//        holder.mImageView.setImageResource(R.drawable.bird);
-//        Picasso.with(holder.mImageView.getContext())
-//                .load(R.drawable.bird)
-//                .into(holder.mImageView);
+    public void bindViewHolder(final ViewHolder holder, int position) {
+        SampleEnumMapAdapter sampleEnumMapAdapter = (SampleEnumMapAdapter)getDataBindAdapter();
+        holder.idChatTextTvName.setText(sampleEnumMapAdapter.nickNameForMe);
+        Picasso.with(getDataBindAdapter().context)
+                .load(sampleEnumMapAdapter.faceUrlForMe)
+                .tag(getDataBindAdapter().context)
+                .into(holder.idChatTextIvBg);
+
+        AVIMTypedMessage msg = ((MessageItem)sampleEnumMapAdapter.get(position)).avimTypedMessage;
+        initPlayBtn(msg, holder.idPlayButton);
+        /*try {
+            UserService.findUserUrl(msg.getFrom(), new FindCallback<AVObject>() {
+
+                @Override
+                public void done(List<AVObject> list, AVException e) {
+                    if (list != null && list.size() > 0) {
+                        Picasso.with(getDataBindAdapter().context)
+                                .load(list.get(0).getAVFile(User.AVATAR).getUrl())
+                                .tag(getDataBindAdapter().context)
+                                .into(holder.idChatTextIvBg);
+                        holder.idChatTextTvName.setText(list.get(0).getString(User.NICKNAME));
+                    }
+                }
+            });
+        } catch (AVException e) {
+            e.printStackTrace();
+            return;
+        }*/
+    }
+
+    private void initPlayBtn(AVIMTypedMessage msg, PlayButton playBtn) {
+        playBtn.setLeftSide(false);
+        playBtn.setPath(MessageHelper.getFilePath(msg));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTitleText;
-        ImageView mImageView;
-        TextView mContent;
+        @Bind(R.id.id_play_button)
+        PlayButton idPlayButton;
+        @Bind(R.id.id_chat_text_iv_bg)
+        CircleImageView idChatTextIvBg;
+        @Bind(R.id.id_chat_text_tv_name)
+        TextView idChatTextTvName;
 
         public ViewHolder(View view) {
             super(view);
-//            mTitleText = (TextView) view.findViewById(R.id.title_type1);
-//            mImageView = (ImageView) view.findViewById(R.id.image_type1);
-//            mContent = (TextView) view.findViewById(R.id.content_type1);
+            ButterKnife.bind(this,view);
         }
     }
 }

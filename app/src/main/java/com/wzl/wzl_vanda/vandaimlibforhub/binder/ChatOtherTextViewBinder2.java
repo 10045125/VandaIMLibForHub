@@ -1,27 +1,44 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.binder;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.rockerhieu.emojicon.EmojiconTextView;
+import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.EmotionHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.UserInfo;
+import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
 import com.wzl.wzl_vanda.vandaimlibforhub.view.JustifyTextView;
 import com.wzl.wzl_vanda.viewtypelibrary.DataBindAdapter;
 import com.wzl.wzl_vanda.viewtypelibrary.DataBinder;
 import com.wzl.wzl_vanda.viewtypelibrary.bean.DemoItem;
 
+import java.util.List;
+import java.util.Map;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by wzl_vanda on 15/7/28.
  */
 public class ChatOtherTextViewBinder2 extends DataBinder<ChatOtherTextViewBinder2.ViewHolder> {
-
-//    private List<SampleData> mDataSet = new ArrayList<>();
 
     public ChatOtherTextViewBinder2(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
@@ -35,18 +52,48 @@ public class ChatOtherTextViewBinder2 extends DataBinder<ChatOtherTextViewBinder
     }
 
     @Override
-    public void bindViewHolder(ViewHolder holder, int position) {
+    public void bindViewHolder(final ViewHolder holder, int position) {
 
-        DemoItem item = (DemoItem) getDataBindAdapter().get(position);
-//
-//        holder.idChatTextviewStatusOk.setVisibility(View.GONE);
-//        holder.idChatTextviewStatusFail.setVisibility(View.GONE);
-//        if (item.sendStatus){
-//            holder.idChatTextviewStatusOk.setVisibility(View.VISIBLE);
-//        }else{
-//            holder.idChatTextviewStatusFail.setVisibility(View.VISIBLE);
-//        }
-        holder.idChatTextview.setText(item.title);
+        MessageItem item = (MessageItem) getDataBindAdapter().get(position);
+        AVIMTextMessage textMsg = (AVIMTextMessage) item.avimTypedMessage;
+        holder.idChatTextview.setText(textMsg.getText());
+
+        Map<String,Object> map = textMsg.getAttrs();
+        if (map != null && map.get(MessageAgent.MAPKEY) != null) {
+            Log.e("map", "" + map.get(MessageAgent.MAPKEY));
+            UserService.findUserInConversationAllInfo((String) map.get(MessageAgent.MAPKEY), new FindCallback<AVObject>() {
+
+                @Override
+                public void done(List<AVObject> list, AVException e) {
+                    if (list != null && list.size() > 0) {
+                        Picasso.with(getDataBindAdapter().context)
+                                .load(list.get(0).getAVFile(User.AVATAR).getUrl())
+                                .tag(getDataBindAdapter().context)
+                                .into(holder.idChatTextIvBg);
+                        holder.idChatTextTvName.setText(list.get(0).getString(User.NICKNAME));
+                    }
+                }
+            });
+        }
+
+        /*try {
+            UserService.findUserUrl(item.avimTypedMessage.getFrom(), new FindCallback<AVObject>() {
+
+                @Override
+                public void done(List<AVObject> list, AVException e) {
+                    if (list != null && list.size() > 0) {
+                        Picasso.with(getDataBindAdapter().context)
+                                .load(list.get(0).getAVFile(User.AVATAR).getUrl())
+                                .tag(getDataBindAdapter().context)
+                                .into(holder.idChatTextIvBg);
+                        holder.idChatTextTvName.setText(list.get(0).getString(User.NICKNAME));
+                    }
+                }
+            });
+        } catch (AVException e) {
+            e.printStackTrace();
+            return;
+        }*/
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,14 +103,15 @@ public class ChatOtherTextViewBinder2 extends DataBinder<ChatOtherTextViewBinder
         @Bind(R.id.id_chat_textview_status_fail)
         TextView idChatTextviewStatusFail;
         @Bind(R.id.id_chat_textview)
-        JustifyTextView idChatTextview;
+        EmojiconTextView idChatTextview;
+        @Bind(R.id.id_chat_text_iv_bg)
+        CircleImageView idChatTextIvBg;
+        @Bind(R.id.id_chat_text_tv_name)
+        TextView idChatTextTvName;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-//            mTitleText = (TextView) view.findViewById(R.id.title_type1);
-//            mImageView = (ImageView) view.findViewById(R.id.image_type1);
-//            mContent = (TextView) view.findViewById(R.id.content_type1);
         }
     }
 }

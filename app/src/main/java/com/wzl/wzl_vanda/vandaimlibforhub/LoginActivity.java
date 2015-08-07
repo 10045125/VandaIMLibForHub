@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         if (AVUser.getCurrentUser() != null){
             MainBaseActivity.goMainActivityFromActivity(LoginActivity.this);
+            finish();
         }
     }
 
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void done(AVUser avUser, AVException e) {
                     MainBaseActivity.goMainActivityFromActivity(LoginActivity.this);
+                    finish();
                 }
             });
         }else{

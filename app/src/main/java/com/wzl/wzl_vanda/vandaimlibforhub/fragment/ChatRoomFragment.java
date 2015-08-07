@@ -26,7 +26,7 @@ import de.greenrobot.event.EventBus;
 public class ChatRoomFragment extends Fragment {
 
 
-    @Bind(R.id.recyclerview_main)
+    @Bind(R.id.id_recyclerview_main)
     RecyclerView mRecyclerView;
 
     ChatMsgRecyclerAdapter mMsgRecyclerAdapter;

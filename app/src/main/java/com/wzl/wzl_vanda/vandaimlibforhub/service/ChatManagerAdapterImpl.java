@@ -11,6 +11,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.wzl.wzl_vanda.vandaimlibforhub.MainActivity;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManagerAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
@@ -81,7 +82,9 @@ public class ChatManagerAdapterImpl implements ChatManagerAdapter {
     }
     int icon = context.getApplicationInfo().icon;
     Intent intent = new Intent(context, MainActivity.class);
-    intent.putExtra("convid", conv.getConversationId());
+    CacheService.registerConv(conv);
+    ChatManager.getInstance().registerConversation(conv);
+    intent.putExtra("ConvId", conv.getConversationId());
 
     //why Random().nextInt()
     //http://stackoverflow.com/questions/13838313/android-onnewintent-always-receives-same-intent

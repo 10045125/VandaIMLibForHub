@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:id="@+id/id_chatRecordLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/chat_BottomHeight"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/id_turnToTextBtn"
+        android:layout_width="@dimen/chat_BottomBtnSize"
+        android:layout_height="@dimen/chat_BottomBtnSize"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/chat_BottomBtnMargin"
+        android:background="@mipmap/chat_btn_keyboard" />
+
+    <com.wzl.wzl_vanda.vandaimlibforhub.view.RecordButton
+        android:id="@+id/id_recordBtn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:text="@string/chat_bottom_record_layout_pressToRecord" />
+
+</LinearLayout>

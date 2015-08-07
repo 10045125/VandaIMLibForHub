@@ -16,3 +16,7 @@ build
 /local.properties
 /viewtypelibrary/viewtypelibrary.iml
 /app/app.iml
+build
+.gradle
+.idea
+/Emojilibrary/Emojilibrary.iml
