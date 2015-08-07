@@ -2,137 +2,11 @@
 <items version="2" >
 
     <item
-        jar="/Users/wzl_vanda/workspace/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-9ea2652c8503218bb6af6f7c459e24b58dc6f9fd.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-urlconnection/2.4.0/a0c195f14cefc7597e0bebf22c3e7b43920dcf4/okhttp-urlconnection-2.4.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="0a0c195f14cefc7597e0bebf22c3e7b43920dcf4">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-2.4.0-26eb15824de0321bb1a38adcb28a61237e2c3a00.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/7.0.1/d5d13ea991eab0252e3710e5df3d6a9d4b21d461/butterknife-7.0.1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="d5d13ea991eab0252e3710e5df3d6a9d4b21d461">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/butterknife-7.0.1-43842c64533b5a3a0745e4d666bf7451c2e42029.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/AndroidBucket-master/unspecified/jars/classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="26aff0786fdc96b4ae58c3de0f4e2200a7c27d3a">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-68ddc82e0c23883d8306f0252c9467b8a848c273.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/de.greenrobot/eventbus/2.4.0/ddd166d01b3158d1c00576d29f7ed15c030df719/eventbus-2.4.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="ddd166d01b3158d1c00576d29f7ed15c030df719">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/eventbus-2.4.0-13bd085de9cdcfd8948e9216692e52382ee36d97.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.4.0/5b72bf48563ea8410e650de14aa33ff69a3e8c35/okio-1.4.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="5b72bf48563ea8410e650de14aa33ff69a3e8c35">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okio-1.4.0-aeadfde5e22e04341583a48d67ce47a919b41f39.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/universal-image-loader-1.9.3.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="a85588bec3e2c4584d593d3f15df1677321bca72">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.9.3-d1e6d1a480ccb9a422b6fa41b0166b134176c5c6.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-f059c9d25ca26e65f516aa65e99b970b6044de5e.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okhttp-2.4.0-8ff234d948db85d749ab037b8197ff03a76f5ab6.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-push-v3.1.4.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="571a7476eaa1ad0284e64ceb0d48d5a100cce8e8">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-push-v3.1.4-ebe1a5a04fc818bfd3a308ef9b31f30b951cb8aa.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/Java-WebSocket-1.2.0-leancloud.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="221fb6750fcf164a85a98bbbafe0879e18868562">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/Java-WebSocket-1.2.0-leancloud-c721aaeffe099ad9d2c4438290228db9740dd034.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="f8efd0096475e0daf054267b61544e10dc776503">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-5e09396576ceaac82af1f24f8a613537ad57c98d.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-sdk-v3.1.4.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="9ff080ea0930132c1073a97e8c0d728ef1e1a9ea">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-sdk-v3.1.4-6074dc6445b7d6815c0583d1f6ea5afe9468548f.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.9.0/a681c044244d9fc375198588297a39ba78028423/retrofit-1.9.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="a681c044244d9fc375198588297a39ba78028423">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/retrofit-1.9.0-c6d6786719bda292da18b683f6a74ab0a85c3ea7.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/picasso-2.5.2-7fb8d8e7dfc0b789c25fda9c110492a8efde0b18.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/fastjson-1.1.37-leancloud.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="f0eb5dd7cf5d5e186a49179c2e956e5a34c71956">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/fastjson-1.1.37-leancloud-77f9bc1302fd17209c3030241928b08ee78af822.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/viewtypelibrary/unspecified/jars/classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="e5cc131ba7c91b2959af9fecca93ce4bf18f14fc">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-19e7f1b9adf70875eb2bb700382ee9ac567f5749.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/httpmime-4.2.4.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="dba4d4d224e2ca872af5be8d2992777583145478">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/httpmime-4.2.4-524632bef690ad72868fa1abacb4d1ba0074a6f3.jar" />
-    </item>
-    <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-push-v3.5.3.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="321a057e4a4bdb2f43bc075758fb090c95d7f16f">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-push-v3.5.3-a9ce91c433f7452a55d1c4241a606a6d7a7480d0.jar" />
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-1ccdeaa981fda6e0c8a3e8cb4e7f8ed1ffc48e22.jar" />
     </item>
     <item
         jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/fastjson.jar"
@@ -142,25 +16,32 @@
         <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/fastjson-628efc6c5dc2232e6ae1c64f2f37b0d274a5be8d.jar" />
     </item>
     <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/fastjson.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-1ccdeaa981fda6e0c8a3e8cb4e7f8ed1ffc48e22.jar" />
+        sha1="94d4ebd4acdaf01d7445435382eea2d2d38e7534">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/fastjson-c0042e5afb4e1412a2d30253dbb5a4db8011ab63.jar" />
     </item>
     <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-sdk-v3.5.3.jar"
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-push-v3.5.3.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="756c7913c26edbec67f7afed9236322272b8ea8d">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-sdk-v3.5.3-e7b77d04daf20c3071196ef9310cf0d3807a816e.jar" />
+        sha1="321a057e4a4bdb2f43bc075758fb090c95d7f16f">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-push-v3.5.3-a9ce91c433f7452a55d1c4241a606a6d7a7480d0.jar" />
     </item>
     <item
-        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.1/jars/classes.jar"
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="3abb4b88f5a8a0584a9b01d3170d7165f12f8588">
-        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-e27bc93c7a28cba554a77e2937c654b7dd2ea281.jar" />
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/picasso-2.5.2-7fb8d8e7dfc0b789c25fda9c110492a8efde0b18.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/workspace/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-9ea2652c8503218bb6af6f7c459e24b58dc6f9fd.jar" />
     </item>
     <item
         jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/android-async-http-1.4.6.jar"
@@ -170,11 +51,200 @@
         <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.6-a7af77e92f7274dc005c0f69177207ffcec1938e.jar" />
     </item>
     <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/avoscloud-push-v3.5.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="321a057e4a4bdb2f43bc075758fb090c95d7f16f">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-push-v3.5.3-1715f4f7d06b5fd7d73c830b8e5ab57b2d4f3c32.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/android-async-http-1.4.6.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a845a88238be0b5be9d238652c1bc0605ef91f52">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.6-01d1888929057da936779c234fca33ade0b3ce41.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/AndroidBucket-master/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c4d7d0da8abd150b91fbdc6237ac807138204205">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-b72d831f2804c91825f9b87b8c5b2a1857359c1a.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/Java-WebSocket-1.2.0-leancloud.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="221fb6750fcf164a85a98bbbafe0879e18868562">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/Java-WebSocket-1.2.0-leancloud-c721aaeffe099ad9d2c4438290228db9740dd034.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.4.0/5b72bf48563ea8410e650de14aa33ff69a3e8c35/okio-1.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5b72bf48563ea8410e650de14aa33ff69a3e8c35">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okio-1.4.0-aeadfde5e22e04341583a48d67ce47a919b41f39.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-54714789ee5041f93556a382481a642c746c1d32.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/Java-WebSocket-1.2.0-leancloud.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="221fb6750fcf164a85a98bbbafe0879e18868562">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/Java-WebSocket-1.2.0-leancloud-6b8b34833fd244a2f2e704c93f07a717d6247271.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okhttp-2.4.0-8ff234d948db85d749ab037b8197ff03a76f5ab6.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-5e09396576ceaac82af1f24f8a613537ad57c98d.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/avoscloud-sdk-v3.5.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="756c7913c26edbec67f7afed9236322272b8ea8d">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-sdk-v3.5.3-c41ef2828e15e50b9ee48dc73f42d108c16dc2d7.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/avoscloud-sdk-v3.5.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="756c7913c26edbec67f7afed9236322272b8ea8d">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/avoscloud-sdk-v3.5.3-e7b77d04daf20c3071196ef9310cf0d3807a816e.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/1.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ac6948cce36f694f3eb3d73a135e298dc4b3527a">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-5d30be2351153c24214d2462a01ba69c7da78d08.jar" />
+    </item>
+    <item
         jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
         <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/gson-2.3.1-1ec44d160d0de0f80b300da253c702e0b18030e2.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/7.0.1/d5d13ea991eab0252e3710e5df3d6a9d4b21d461/butterknife-7.0.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="d5d13ea991eab0252e3710e5df3d6a9d4b21d461">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/butterknife-7.0.1-43842c64533b5a3a0745e4d666bf7451c2e42029.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/Emojilibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e159df869263efe37a743b6cdd51d5dbe70f12ac">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-47ac64d19c54f4b38949a9599ee6f6e663122af5.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.9.0/a681c044244d9fc375198588297a39ba78028423/retrofit-1.9.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a681c044244d9fc375198588297a39ba78028423">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/retrofit-1.9.0-c6d6786719bda292da18b683f6a74ab0a85c3ea7.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/viewtypelibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="aeaf5926491b65092e202a4ca36934e171c09ce5">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-33719484cf9e813be72fb28926423a6b18058a78.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-urlconnection/2.4.0/a0c195f14cefc7597e0bebf22c3e7b43920dcf4/okhttp-urlconnection-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="0a0c195f14cefc7597e0bebf22c3e7b43920dcf4">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-2.4.0-26eb15824de0321bb1a38adcb28a61237e2c3a00.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="3abb4b88f5a8a0584a9b01d3170d7165f12f8588">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-46a9d2c28ee60499e6f615ca6916516c32e688f0.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/libs/httpmime-4.2.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="dba4d4d224e2ca872af5be8d2992777583145478">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/httpmime-4.2.4-13d057e8dfcb6b2f1560eee3f60ccb41bcab5eab.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/.gradle/caches/modules-2/files-2.1/de.greenrobot/eventbus/2.4.0/ddd166d01b3158d1c00576d29f7ed15c030df719/eventbus-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ddd166d01b3158d1c00576d29f7ed15c030df719">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/eventbus-2.4.0-13bd085de9cdcfd8948e9216692e52382ee36d97.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="3abb4b88f5a8a0584a9b01d3170d7165f12f8588">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-e27bc93c7a28cba554a77e2937c654b7dd2ea281.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/AndroidBucket-master/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="26aff0786fdc96b4ae58c3de0f4e2200a7c27d3a">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-68ddc82e0c23883d8306f0252c9467b8a848c273.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-3b18da72617fa828adb228a57b81ef8c638601bf.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/libs/httpmime-4.2.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="dba4d4d224e2ca872af5be8d2992777583145478">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/httpmime-4.2.4-524632bef690ad72868fa1abacb4d1ba0074a6f3.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/IM/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-11d9b4f64af2ce48486fd931dc83a3cd2a0393ff.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/VandaIMLibForHub/viewtypelibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e5cc131ba7c91b2959af9fecca93ce4bf18f14fc">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/classes-19e7f1b9adf70875eb2bb700382ee9ac567f5749.jar" />
+    </item>
+    <item
+        jar="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/Users/wzl_vanda/AndroidStudioProjects/VandaIMLibForHub/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-f059c9d25ca26e65f516aa65e99b970b6044de5e.jar" />
     </item>
 
 </items>

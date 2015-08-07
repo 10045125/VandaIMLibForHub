@@ -1,31 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chatTextLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_chatTextLayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/chat_BottomHeight"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.yqritc.recyclerviewmultipleviewtypesadapter.im.view.EmotionEditText
-        android:id="@+id/textEdit"
+    <!--@dimen/chat_BottomHeight-->
+    <!--com.wzl.wzl_vanda.vandaimlibforhub.view.EmotionEditText-->
+
+    <com.rockerhieu.emojicon.EmojiconEditText
+        android:id="@+id/id_chat_textedit"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_weight="1"
-        android:background="@mipmap/chat_login_edit_normal"
-        android:singleLine="true"
-        android:textSize="18sp" />
+        android:background="@drawable/edittext_shape_bg"
+        android:padding="1.5dp"
+        android:minHeight="@dimen/chat_EditHeight"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:imeOptions="actionSend"
+        android:maxLines="6"
+        android:maxLength="120"
+        app:emojiconSize="28sp"
+        android:visibility="visible"/>
+    <!--chat_login_edit_normal-->
+
+    <com.wzl.wzl_vanda.vandaimlibforhub.view.RecordButton
+        android:id="@+id/id_recordBtn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:text="@string/chat_bottom_record_layout_pressToRecord"
+        android:visibility="gone"/>
 
     <LinearLayout
-        android:id="@+id/chatBottomRightLayout"
+        android:id="@+id/id_chatBottomRightLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/sendBtn"
+            android:id="@+id/id_sendBtn"
             android:layout_width="@dimen/chat_BottomBtnSize"
             android:layout_height="@dimen/chat_BottomBtnSize"
             android:layout_margin="5dp"
@@ -36,14 +61,14 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/showEmotionBtn"
+            android:id="@+id/id_showEmotionBtn"
             android:layout_width="@dimen/chat_BottomBtnSize"
             android:layout_height="@dimen/chat_BottomBtnSize"
             android:background="@mipmap/ic_expression"
             android:gravity="center" />
 
         <Button
-            android:id="@+id/showAddBtn"
+            android:id="@+id/id_showAddBtn"
             android:layout_width="@dimen/chat_BottomBtnSize"
             android:layout_height="@dimen/chat_BottomBtnSize"
             android:layout_gravity="center"

@@ -2,6 +2,7 @@ package com.wzl.wzl_vanda.vandaimlibforhub.service;
 
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -15,16 +16,20 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.ConversationHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Constant;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ConversationType;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.ForMeConversationInfo;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Room;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.ColoredBitmapProvider;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,14 +54,19 @@ public class ConversationManager {
 
         @Override
         public void onMemberLeft(AVIMClient avimClient, AVIMConversation avimConversation, List<String> list, String s) {
-            CacheService.registerConv(avimConversation);
-            getInstance().postConvChanged(avimConversation);
+            Log.e("onMemberLeft -> ",""+avimConversation.getName());
+//            CacheService.registerConv(avimConversation);
+//            getInstance().postConvChanged(avimConversation);
+            EventBus.getDefault().post(new TextView(ChatManager.getContext()));
         }
 
         @Override
         public void onMemberJoined(AVIMClient avimClient, AVIMConversation avimConversation, List<String> list, String s) {
-            CacheService.registerConv(avimConversation);
-            getInstance().postConvChanged(avimConversation);
+            Log.e("onMemberJoined -> ",""+avimConversation.getName());
+//            CacheService.registerConv(avimConversation);
+//            getInstance().postConvChanged(avimConversation);
+
+            EventBus.getDefault().post(new TextView(ChatManager.getContext()));
         }
 
         @Override
@@ -90,7 +100,7 @@ public class ConversationManager {
     * */
 
     public static AVIMTypedMessage getLastMessage(final AVIMConversation conversation) throws AVException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+//        final CountDownLatch latch = new CountDownLatch(1);
         final AVException[] es = new AVException[1];
         final List<AVIMTypedMessage> foundMessages = new ArrayList<>();
         conversation.queryMessages(1, new AVIMMessagesQueryCallback() {
@@ -103,14 +113,15 @@ public class ConversationManager {
                     }
                     for (AVIMMessage message : messages) {
                         if (message instanceof AVIMTypedMessage) {
+                            Log.e("message ->>> ",""+message.getContent());
                             foundMessages.add((AVIMTypedMessage) message);
                         }
                     }
                 }
-                latch.countDown();
+//                latch.countDown();
             }
         });
-        latch.await();
+//        latch.await();
         if (es[0] != null) {
             throw es[0];
         }
@@ -122,17 +133,81 @@ public class ConversationManager {
 
     }
 
-    public List<Room> findAndCacheRooms() throws AVException, InterruptedException {
-        final List<Room> rooms = ChatManager.getInstance().findRecentRooms();
-        Log.e("rooms ->> ",""+rooms.size());
-      /*  AVIMConversationQuery q = ChatManager.getInstance().getQuery();
-        List<String> ids = new ArrayList<>();
 
-        for (Room room: rooms){
-            ids.add(room.getConversationId());
+    public List<Room> findAndCacheRooms() throws AVException, InterruptedException {
+        List<Room> rooms = ChatManager.getInstance().findRecentRooms();
+        List<String> convids = new ArrayList<>();
+        for (Room room : rooms) {
+            convids.add(room.getConversationId());
+        }
+        final AVException[] es = new AVException[1];
+        final CountDownLatch latch = new CountDownLatch(1);
+        CacheService.cacheConvs(convids, new AVIMConversationCallback() {
+            @Override
+            public void done(AVException e) {
+                es[0] = e;
+                latch.countDown();
+            }
+        });
+        latch.await();
+        if (es[0] != null) {
+            throw es[0];
+        }
+        List<Room> validRooms = new ArrayList<>();
+        for (Room room : rooms) {
+            AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
+            if (ConversationHelper.isValidConversation(conversation)) {
+                validRooms.add(room);
+            } else {
+//                Log.e("conversation is invalid, please check", getConversationInfo(conversation));
+            }
         }
 
-        q.whereContainsIn(Constant.OBJECT_ID, ids);
+        List<String> userIds = new ArrayList<>();
+        for (Room room : validRooms) {
+            AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
+            room.setConversation(conversation);
+            room.setLastMessage(getLastMessage(conversation));
+            if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Single) {
+                userIds.add(ConversationHelper.otherIdOfConversation(conversation));
+            }
+        }
+        Collections.sort(validRooms, new Comparator<Room>() {
+            @Override
+            public int compare(Room lhs, Room rhs) {
+                if (lhs.getLastMessage() != null && rhs.getLastMessage() != null) {
+                    long value = lhs.getLastMessage().getTimestamp() - rhs.getLastMessage().getTimestamp();
+                    if (value > 0) {
+                        return -1;
+                    } else if (value < 0) {
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+        });
+        CacheService.cacheUsers(new ArrayList<>(userIds));
+        return validRooms;
+    }
+
+    /*public List<Room> findAndCacheRooms() throws AVException, InterruptedException {
+        final List<Room> rooms = ChatManager.getInstance().findRecentRooms();
+        Log.e("rooms ->> ",""+rooms.size());
+//       AVIMConversationQuery q = ChatManager.getInstance().getQuery();
+//        AVIMConversation mAVIMConversation;
+         List<String> ids = new ArrayList<>();
+
+        for (final Room room: rooms){
+//            ids.add(room.getConversationId());
+            ChatManager.getInstance().fetchConversationWithUserId(room.getConversationId(), new AVIMConversationCreatedCallback() {
+                @Override
+                public void done(AVIMConversation avimConversation, AVException e) {
+                    room.setConversation(avimConversation);
+                }
+            });
+        }
+
+        /*q.whereContainsIn(Constant.OBJECT_ID, ids);
         q.findInBackground(new AVIMConversationQueryCallback() {
             @Override
             public void done(List<AVIMConversation> list, AVException e) {
@@ -153,7 +228,7 @@ public class ConversationManager {
 
             }
         });
-
+/*
         for (Room room : rooms) {
             AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
             room.setConversation(conversation);
@@ -181,12 +256,13 @@ public class ConversationManager {
         }
         List<String> userIds = new ArrayList<>();
         for (Room room : rooms) {
-            AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
+            AVIMConversation conversation = new EAVIMConversation(ChatManager.getInstance().getImClient(),room.getConversationId());
             room.setConversation(conversation);
+            conversation.get
             room.setLastMessage(getLastMessage(conversation));
-            if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Group) {
-                userIds.add(ConversationHelper.otherIdOfConversation(conversation));
-            }
+//            if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Group) {
+//                userIds.add(ConversationHelper.otherIdOfConversation(conversation));
+//            }
         }
         Collections.sort(rooms, new Comparator<Room>() {
             @Override
@@ -202,9 +278,9 @@ public class ConversationManager {
                 return 0;
             }
         });
-        CacheService.cacheUsers(new ArrayList<>(userIds));*/
+       // CacheService.cacheUsers(new ArrayList<>(userIds));
         return rooms;
-    }
+    }*/
 
     public void updateName(final AVIMConversation conv, String newName, final AVIMConversationCallback callback) {
         conv.setName(newName);
@@ -265,7 +341,8 @@ public class ConversationManager {
                     @Override
                     public void done(AVIMConversation avimConversation, AVException e) {
                         if (e == null) {
-                            MessageAgent agent = new MessageAgent(avimConversation);
+                           ForMeConversationInfo forMeConversationInfo = CacheService.getMeConversationObjectId(avimConversation.getConversationId());
+                            MessageAgent agent = new MessageAgent(avimConversation,forMeConversationInfo != null ? forMeConversationInfo.objectId:"");
 //                            agent.sendText(App.ctx.getString(R.string.message_when_agree_request));
                         }
                     }

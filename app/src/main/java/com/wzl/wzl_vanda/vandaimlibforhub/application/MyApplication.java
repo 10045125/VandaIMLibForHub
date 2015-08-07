@@ -5,13 +5,28 @@ import android.util.Log;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.model.AddRequest;
+import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.ChatManagerAdapterImpl;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.ConversationManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.PushManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.utils.Utils;
 import com.wzl.wzl_vanda.viewtypelibrary.application.AppApplication;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wzl_vanda on 15/7/29.
@@ -24,8 +39,16 @@ public class MyApplication extends AppApplication {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        AVOSCloud.initialize(this, "vh4pa8ly3s9gwt2wksxlg7pefkzmrpppktl6niooy2kcmbvb", "ke5rav8dife2ljg7h1xunj82b3aypjfp6wsk6bpipols8ajq");
+        boolean isTest = false;
+        String appId = isTest ? "x3o016bxnkpyee7e9pa5pre6efx2dadyerdlcez0wbzhw25g":"vh4pa8ly3s9gwt2wksxlg7pefkzmrpppktl6niooy2kcmbvb";
+        String appKey = isTest ? "057x24cfdzhffnl3dzk14jh9xo2rq6w1hy1fdzt5tv46ym78":"ke5rav8dife2ljg7h1xunj82b3aypjfp6wsk6bpipols8ajq";
+        AVOSCloud.initialize(this, appId, appKey);
         PushManager.getInstance().init(mContext);
+        AVObject.registerSubclass(AddRequest.class);
+//        AVObject.registerSubclass(UpdateInfo.class);
+        // 节省流量
+        AVOSCloud.setLastModifyEnabled(true);
+        AVOSCloud.setDebugLogEnabled(false);
 //        AVObject.registerSubclass(AddRequest.class);
 
 //        login("Androidstudiowzl", "10045125");
@@ -34,7 +57,7 @@ public class MyApplication extends AppApplication {
 //        final AVIMClient imClient = AVIMClient.getInstance(Utils.getLocalMacAddress(this));
         initChatManager();
 //        ChatManager.getInstance().openClientWithSelfId(Utils.getLocalMacAddress(getContext()),null);
-        /*imClient.open(new AVIMClientCallback() {
+      /*  ChatManager.getInstance().getImClient().open(new AVIMClientCallback() {
             @Override
             public void done(AVIMClient client, AVException e) {
                 if (null != e) {
@@ -48,9 +71,9 @@ public class MyApplication extends AppApplication {
 //                    currentActivity.startActivity(intent);
                     Log.e("AVException ->>> ", "ok");
                     final List<String> clientIds = new ArrayList<String>();
-                    clientIds.add(Utils.getLocalMacAddress(mContext));
+                    clientIds.add(AVUser.getCurrentUser().getObjectId());
 //                    clientIds.add("34f60e9ba326fef10cf31ac188be9f27");
-                    clientIds.add("55b8a95800b0196faa27f8ae");
+                    clientIds.add("Androidstudiowzl");
 
 // 我们给对话增加一个自定义属性 type，表示单聊还是群聊
 // 常量定义：
@@ -59,7 +82,7 @@ public class MyApplication extends AppApplication {
                     Map<String, Object> attr = new HashMap<String, Object>();
                     attr.put("type", ConversationType_OneOne);
 
-                    imClient.createConversation(clientIds, attr, new AVIMConversationCreatedCallback() {
+                    ChatManager.getInstance().getImClient().createConversation(clientIds, attr, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(final AVIMConversation conversation, AVException e) {
                             if (null != conversation) {
