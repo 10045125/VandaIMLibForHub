@@ -16,6 +16,8 @@ import com.avos.avoscloud.im.v2.messages.AVIMVideoMessage;
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.GlobalData;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConvType;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsgStatus;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsgType;
@@ -31,16 +33,32 @@ public class CustomMessageHandler extends AVIMTypedMessageHandler {
     @Override
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         IMMsg imMsg = this.convert2IMMsg(client, message);
-        Log.i("IM", "onMessage, imMsg:" + imMsg);
-
         DBHelper.getInstance().insertMsg(imMsg);
+
+        IMConv conv = this.genConvData(conversation, imMsg);
+        DBHelper.getInstance().insertAndIncrtUnread(conv);
+
         this.eventBus.post(imMsg);
+        this.eventBus.post(conv);
     }
 
     public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         String logMsg = String.format("convId:%s, msg.id:%s, msg.content:%s",
                 message.getConversationId(), message.getMessageId(), message.getContent());
         Log.i("IM", "onMessageReceipt, " + logMsg);
+    }
+
+    IMConv genConvData(AVIMConversation avimConv, IMMsg newMsg) {
+        IMConv conv = new IMConv();
+        conv.convId = newMsg.convId;
+        conv.type = IMConvType.CHAT;
+        conv.latestMsgTime = newMsg.sendTime;
+        conv.putAttr(IMConv.ATTR_IM_MSG_TYPE, newMsg.type.ordinal());
+        conv.putAttr(IMConv.ATTR_SENDER_ID, newMsg.senderId);
+        conv.putAttr(IMConv.ATTR_TITLE, avimConv.getName());
+        conv.putAttr(IMConv.ATTR_TEXT, newMsg.text);
+
+        return conv;
     }
 
     IMMsg convert2IMMsg(AVIMClient client, AVIMTypedMessage typedMsg) {

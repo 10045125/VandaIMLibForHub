@@ -55,6 +55,10 @@
     <string name="chat_activity_select_picture">选择图片</string>
     <string name="chat_cloudCodeNotDeployTips">云代码未部署，请到项目主页根据说明来部署</string>
     <string name="chat_record_button_pleaseSayMore">说多点吧～</string>
+    <string name="title_activity_show_conversation">show_conversation</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>

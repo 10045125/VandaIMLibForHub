@@ -16,13 +16,16 @@ public class IMConv {
     public final static String CONV_ID_NOTICES = "notice";
 
     public final static String ATTR_ICON = "icon";
+    public final static String ATTR_IM_MSG_TYPE = "immsg_type";
     public final static String ATTR_TITLE = "title";
     public final static String ATTR_TEXT = "text";
-    public final static String ATTR_SENDER = "sender";
+    public final static String ATTR_SENDER_ID = "sender_id";
 
     public String convId;
     public IMConvType type;
     public int unreadCount;
+    public int orderPriority;
+    public long latestMsgTime;
 
     public HashMap<String, Object> attrs;
 
@@ -38,4 +41,15 @@ public class IMConv {
         return this.attrs.get(attrName);
     }
 
+    @Override
+    public String toString() {
+        return "IMConv{" +
+                "convId='" + convId + '\'' +
+                ", type=" + type +
+                ", unreadCount=" + unreadCount +
+                ", orderPriority=" + orderPriority +
+                ", latestMsgTime=" + latestMsgTime +
+                ", attrs=" + attrs +
+                '}';
+    }
 }

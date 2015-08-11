@@ -1,5 +1,6 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.data;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.JsonUtils;
 
@@ -26,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     private HashSet<String> createdTables;
+    private HashSet<String> insertedConvIds;
 
 
     /**
@@ -59,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private DBHelper(Context context, String userId) {
         this(context, "im_" + userId + ".db3", DB_VER);
         this.createdTables = new HashSet<>();
+        this.insertedConvIds = new HashSet<>();
     }
 
 
@@ -66,7 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.i("IM", "DBHelper.onCreate");
 
-        //this.createConversationTable();
+        this.createConversationTable(sqLiteDatabase);
     }
 
     @Override
@@ -82,6 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("IM", "DB.onOpen, " + logMsg);
 
         this.queryCreatedTables(db);
+        this.queryInsertedConvIds(db);
     }
 
     private void queryCreatedTables(SQLiteDatabase db) {
@@ -95,20 +100,29 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.i("IM", "queryCreatedTables, " + logMsg);
     }
 
+    private void queryInsertedConvIds(SQLiteDatabase db) {
+        String query = "SELECT " + TConversation.COLUMN_CONV_ID + " FROM " + TConversation.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            this.insertedConvIds.add(cursor.getString(0));
+        }
+    }
+
     public synchronized void close() {
         Log.d("IM", "db.close, db.name:" + this.getDatabaseName());
 
         super.close();
         this.createdTables.clear();
+        this.insertedConvIds.clear();
         instance = null;
     }
 
-    public List<IMConv> loadConvs() {
-        List<IMConv> convs = new ArrayList<>();
+    public ArrayList<IMConv> loadConvs() {
+        ArrayList<IMConv> convs = new ArrayList<>();
 
-        String sql = "select * from " + TConversation.TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sql, null);
+        String orderBy = TConversation.COLUMN_ORDER_PRIORITY + " DESC, " + TConversation.COLUMN_LATEST_MSG_TIME + " DESC";
+        Cursor cursor = db.query(TConversation.TABLE_NAME, null, null, null, null, null, orderBy);
         while (cursor.moveToNext()) {
             IMConv conv = new IMConv();
             conv.convId = cursor.getString(cursor.getColumnIndex(TConversation.COLUMN_CONV_ID));
@@ -126,21 +140,35 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertAndIncrtUnread(IMConv conv) {
         String attrs = JsonUtils.toJsonString(conv.attrs);
-
-        ContentValues updateValues = new ContentValues();
-        updateValues.put(TConversation.COLUMN_UNREAD_COUNT, TConversation.COLUMN_UNREAD_COUNT + " + 1");
-        updateValues.put(TConversation.COLUMN_ATTRS, attrs);
-
         SQLiteDatabase db = this.getWritableDatabase();
-        int updatedRow = db.update(TConversation.TABLE_NAME, updateValues, TConversation.COLUMN_CONV_ID + " = ?", new String[]{conv.convId});
-        if (updatedRow > 0) return;
 
-        ContentValues insertValues = new ContentValues();
-        insertValues.put(TConversation.COLUMN_CONV_ID, conv.convId);
-        insertValues.put(TConversation.COLUMN_UNREAD_COUNT, 1);
-        insertValues.put(TConversation.COLUMN_CONV_TYPE, conv.type.ordinal());
-        insertValues.put(TConversation.COLUMN_ATTRS, attrs);
-        db.insert(TConversation.TABLE_NAME, null, insertValues);
+        if (insertedConvIds.contains(conv.convId)) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("update ").append(TConversation.TABLE_NAME).append(" set ")
+               .append(TConversation.COLUMN_UNREAD_COUNT).append(" = 1 + ").append(TConversation.COLUMN_UNREAD_COUNT).append(", ")
+               .append(TConversation.COLUMN_LATEST_MSG_TIME).append(" = ?, ")
+               .append(TConversation.COLUMN_ATTRS).append(" = ? ")
+               .append(" WHERE ").append(TConversation.COLUMN_CONV_ID).append(" = ?");
+            db.execSQL(sql.toString(), new Object[]{conv.latestMsgTime, attrs, conv.convId});
+        } else {
+            ContentValues insertValues = new ContentValues();
+            insertValues.put(TConversation.COLUMN_CONV_ID, conv.convId);
+            insertValues.put(TConversation.COLUMN_UNREAD_COUNT, 1);
+            insertValues.put(TConversation.COLUMN_LATEST_MSG_TIME, conv.latestMsgTime);
+            insertValues.put(TConversation.COLUMN_ORDER_PRIORITY, conv.orderPriority);;
+            insertValues.put(TConversation.COLUMN_CONV_TYPE, conv.type.ordinal());
+            insertValues.put(TConversation.COLUMN_ATTRS, attrs);
+            db.insert(TConversation.TABLE_NAME, null, insertValues);
+
+            this.insertedConvIds.add(conv.convId);
+        }
+    }
+
+    public void resetConvUnreadCount(String convId) {
+        ContentValues values = new ContentValues();
+        values.put(TConversation.COLUMN_UNREAD_COUNT, 0);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TConversation.TABLE_NAME, values, TConversation.COLUMN_CONV_ID + " = ?", new String[]{convId});
     }
 
     /**
@@ -167,10 +195,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (limit > 0) sql.append(" limit ").append(limit);
 
-        Log.d("IM", "loadMsgs, sql:" + sql.toString());
+        if (BuildConfig.DEBUG) Log.d("IM", "loadMsgs, sql:" + sql.toString());
 
         Cursor cursor = db.rawQuery(sql.toString(), null); // 直接sql效率没传入参数的好，就这样
-
         while (cursor.moveToNext()) {
             IMMsg msg = new IMMsg(convId);
             msgs.add(msg);
@@ -246,16 +273,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return TMsgHistory.TABLE_PREFIX + convId;
     }
 
-    private void createConversationTable() {
+    private void createConversationTable(SQLiteDatabase db) {
         Log.d("IM", "createConversationTable");
 
         String createTableSql = "CREATE TABLE IF NOT EXISTS " + TConversation.TABLE_NAME + "("
                 + TConversation.COLUMN_CONV_ID + " CHAR(63) PRIMARY KEY,"
                 + TConversation.COLUMN_CONV_TYPE + " INT, "
                 + TConversation.COLUMN_UNREAD_COUNT + " INT, "
+                + TConversation.COLUMN_LATEST_MSG_TIME + " BIGINT, "
+                + TConversation.COLUMN_ORDER_PRIORITY + " INT, "
                 + TConversation.COLUMN_ATTRS + " TEXT "
                 + ")";
-        SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(createTableSql);
         this.createdTables.add(TConversation.TABLE_NAME);
     }
@@ -278,6 +306,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public final static String COLUMN_CONV_ID = "conv_id";
         public final static String COLUMN_CONV_TYPE = "type";
         public final static String COLUMN_UNREAD_COUNT = "unread_count";
+        public final static String COLUMN_ORDER_PRIORITY = "order_priority";
+        public final static String COLUMN_LATEST_MSG_TIME = "latest_msg_time";
         public final static String COLUMN_ATTRS = "attrs";
     }
     

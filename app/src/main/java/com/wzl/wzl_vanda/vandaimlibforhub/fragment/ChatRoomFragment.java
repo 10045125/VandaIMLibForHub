@@ -89,6 +89,7 @@ public class ChatRoomFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        mEventBus.unregister(this);
     }
 
     private void loadDBMsgInBackground() {
@@ -111,15 +112,9 @@ public class ChatRoomFragment extends Fragment {
     }
 
 
-    public void onEventMainThread(Object event) {
-        Log.d("IM", "onEventMainThread, event:" + event);
+    public void onEventMainThread(IMMsg newMsg) {
+        Log.d("IM", "onEventMainThread, newMsg:" + newMsg);
 
-        if (event == null) return;
-
-        if (event instanceof IMMsg) this.handleNewAddedMsg((IMMsg) event);
-    }
-
-    private void handleNewAddedMsg(IMMsg newMsg) {
         boolean isViewOnBottom = isViewOnBottom();
 
         this.mMsgRecyclerAdapter.addNewMsg(newMsg);
