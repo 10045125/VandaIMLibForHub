@@ -3,4 +3,8 @@
     <declare-styleable name="ChatPlayBtn">
         <attr name="left" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="DraggableFlagView">
+        <attr name="tipsColor" format="color"/>
+    </declare-styleable>
 </resources>

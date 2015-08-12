@@ -25,4 +25,13 @@
     <dimen name="dimen_chat_name_m_left">14dp</dimen>
     <dimen name="dimen_chat_text_margin">4dp</dimen>
     <dimen name="dimen_chat_textsize">10sp</dimen>
+
+    <dimen name="dimen_chat_set_textsize">16sp</dimen>
+    <dimen name="dimen_chat_set_sec_textsize">14sp</dimen>
+
+    <dimen name="dimen_padding">10dp</dimen>
+
+    <dimen name="dimen_margin">15dp</dimen>
+
+    <dimen name="dimen_chat_set_image_size">60dp</dimen>
 </resources>

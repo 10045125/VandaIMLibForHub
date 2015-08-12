@@ -7,12 +7,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.bumptech.glide.Glide;
 import com.rockerhieu.emojicon.EmojiconTextView;
 import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.EmotionHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.view.JustifyTextView;
 import com.wzl.wzl_vanda.viewtypelibrary.DataBindAdapter;
@@ -43,15 +47,14 @@ public class ChatTextViewBinder2 extends DataBinder<ChatTextViewBinder2.ViewHold
 
     @Override
     public void bindViewHolder(final ViewHolder holder, int position) {
-        SampleEnumMapAdapter sampleEnumMapAdapter = (SampleEnumMapAdapter)getDataBindAdapter();
-        MessageItem item = (MessageItem) sampleEnumMapAdapter.get(position);
-        AVIMTextMessage textMsg = (AVIMTextMessage) item.avimTypedMessage;
+        ChatEnumMapAdater chatEnumMapAdater = (ChatEnumMapAdater)getDataBindAdapter();
+        IMMsg imMsg = chatEnumMapAdater.get(position);
 
-        holder.idChatTextview.setText(textMsg.getText());
-        holder.idChatTextTvName.setText(sampleEnumMapAdapter.nickNameForMe);
-        Picasso.with(getDataBindAdapter().context)
-                .load(sampleEnumMapAdapter.faceUrlForMe)
-                .tag(getDataBindAdapter().context)
+        holder.idChatTextview.setText(imMsg.text);
+        holder.idChatTextTvName.setText(chatEnumMapAdater.nickNameForMe);
+        Glide.with(ChatFragment.instance)
+                .load(chatEnumMapAdater.faceUrlForMe)
+//                .tag(getDataBindAdapter().context)
                 .into(holder.idChatTextIvBg);
        /* try {
             UserService.findUserUrl(item.avimTypedMessage.getFrom(), new FindCallback<AVObject>() {

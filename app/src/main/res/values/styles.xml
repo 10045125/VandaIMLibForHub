@@ -21,4 +21,14 @@
         <item name="android:windowBackground">@drawable/chat_record_button_round_background</item>
     </style>
 
+
+    <style name="SwitchButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">20dp</item>
+        <!-- <item name="android:paddingLeft">10dp</item> -->
+        <!-- <item name="android:paddingRight">10dp</item> -->
+        <!-- <item name="android:paddingTop">4dp</item> -->
+        <!-- <item name="android:paddingBottom">4dp</item> -->
+    </style>
+
 </resources>

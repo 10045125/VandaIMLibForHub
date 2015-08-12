@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@color/chat_common_white">
+
+    <!--android:minHeight="?android:attr/actionBarSize"-->
+
+    <com.wzl.wzl_vanda.vandaimlibforhub.view.AAGridView
+        android:id="@+id/id_recyclerview_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="5"
+        android:verticalSpacing="5dp"
+        android:layout_toLeftOf="@+id/id_chat_set_iv"/>
+
+
+    <ImageView
+        android:id="@+id/id_chat_set_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/ic_image_right"/>
+
+</RelativeLayout>

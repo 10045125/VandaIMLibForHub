@@ -1,6 +1,7 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Jam on 03/08/2015.
@@ -77,6 +78,10 @@ public class IMMsg {
 
     public Object getAttr(String attrName) {
         return this.attrs.get(attrName);
+    }
+
+    public Map<String,Object> getAttrs(){
+        return attrs;
     }
 
     public String getUrl() {

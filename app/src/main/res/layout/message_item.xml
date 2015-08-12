@@ -2,25 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:gravity="center_vertical"
-    android:padding="5dp"
-    android:orientation="horizontal"
-    android:background="@android:color/white">
+    android:orientation="horizontal">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/chatBottomLeftLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/showVoiceBtn"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/id_message_list_face"
             android:layout_width="@dimen/chat_list_image_width"
             android:layout_height="@dimen/chat_list_image_width"
-            android:layout_marginLeft="3dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
             android:background="@mipmap/ic_voice" />
 
-    </LinearLayout>
+
+        <!--<com.wzl.wzl_vanda.vandaimlibforhub.view.BadgeView-->
+            <!--android:id="@+id/id_message_tips_unreadcount"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignTop="@+id/showVoiceBtn"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:layout_toRightOf="@+id/showVoiceBtn"-->
+            <!--android:text="51"-->
+            <!--android:textSize="12dp" />-->
+
+        <com.wzl.wzl_vanda.vandaimlibforhub.view.DraggableFlagView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/id_message_unreadcount"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignTop="@+id/id_message_list_face"
+            android:layout_marginLeft="40dp"
+            app:tipsColor="@color/color_message_list_circle"/>
+
+    </FrameLayout>
 
     <include layout="@layout/message_item_right_chlid" />
 

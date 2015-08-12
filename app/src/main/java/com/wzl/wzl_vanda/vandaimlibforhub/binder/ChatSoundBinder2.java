@@ -12,12 +12,16 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.EmotionHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
@@ -52,15 +56,15 @@ public class ChatSoundBinder2 extends DataBinder<ChatSoundBinder2.ViewHolder> {
 
     @Override
     public void bindViewHolder(final ViewHolder holder, int position) {
-        SampleEnumMapAdapter sampleEnumMapAdapter = (SampleEnumMapAdapter)getDataBindAdapter();
-        holder.idChatTextTvName.setText(sampleEnumMapAdapter.nickNameForMe);
-        Picasso.with(getDataBindAdapter().context)
-                .load(sampleEnumMapAdapter.faceUrlForMe)
-                .tag(getDataBindAdapter().context)
+        ChatEnumMapAdater chatEnumMapAdater = (ChatEnumMapAdater)getDataBindAdapter();
+        holder.idChatTextTvName.setText(chatEnumMapAdater.nickNameForMe);
+        Glide.with(ChatFragment.instance)
+                .load(chatEnumMapAdater.faceUrlForMe)
+//                .tag(getDataBindAdapter().context)
                 .into(holder.idChatTextIvBg);
 
-        AVIMTypedMessage msg = ((MessageItem)sampleEnumMapAdapter.get(position)).avimTypedMessage;
-        initPlayBtn(msg, holder.idPlayButton);
+        IMMsg imMsg = chatEnumMapAdater.get(position);
+        initPlayBtn(imMsg, holder.idPlayButton);
         /*try {
             UserService.findUserUrl(msg.getFrom(), new FindCallback<AVObject>() {
 
@@ -81,9 +85,9 @@ public class ChatSoundBinder2 extends DataBinder<ChatSoundBinder2.ViewHolder> {
         }*/
     }
 
-    private void initPlayBtn(AVIMTypedMessage msg, PlayButton playBtn) {
+    private void initPlayBtn(IMMsg msg, PlayButton playBtn) {
         playBtn.setLeftSide(false);
-        playBtn.setPath(MessageHelper.getFilePath(msg));
+        playBtn.setPath(MessageHelper.getFilePathForIMMsg(msg));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

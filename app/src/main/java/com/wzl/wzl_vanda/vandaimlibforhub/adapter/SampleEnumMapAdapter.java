@@ -19,7 +19,7 @@ import com.wzl.wzl_vanda.viewtypelibrary.bean.DemoItem;
 
 
 /**
- * Created by yqritc on 2015/03/20.
+ * List 适配
  */
 public class SampleEnumMapAdapter extends EnumMapBindAdapter<DemoItem, SampleEnumMapAdapter.SampleViewType> {
 

@@ -30,6 +30,17 @@ public class DBHelper extends SQLiteOpenHelper {
     private HashSet<String> createdTables;
     private HashSet<String> insertedConvIds;
 
+    public synchronized static DBHelper getCurrentUserInstance() {
+        String selfId = ChatManager.getInstance().getSelfId();
+        if (selfId == null) {
+            throw new NullPointerException("selfId is null");
+        }
+        if (instance == null) {
+            instance = new DBHelper(ChatManager.getContext(), selfId);
+        }
+        return instance;
+    }
+
 
     /**
      * 初始化DBHelper实例
@@ -44,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * 获取单例前需要先调用{@link #init(Context, String)}方法初始化单例
+     *
      * @return
      */
     public static DBHelper getInstance() {
@@ -128,6 +140,8 @@ public class DBHelper extends SQLiteOpenHelper {
             conv.convId = cursor.getString(cursor.getColumnIndex(TConversation.COLUMN_CONV_ID));
             conv.type = IMConvType.valueOf(cursor.getInt(cursor.getColumnIndex(TConversation.COLUMN_CONV_TYPE)));
             conv.unreadCount = cursor.getInt(cursor.getColumnIndex(TConversation.COLUMN_UNREAD_COUNT));
+            conv.orderPriority = cursor.getInt(cursor.getColumnIndex(TConversation.COLUMN_ORDER_PRIORITY));
+            conv.latestMsgTime = cursor.getLong(cursor.getColumnIndex(TConversation.COLUMN_LATEST_MSG_TIME));
 
             String attrs = cursor.getString(cursor.getColumnIndex(TConversation.COLUMN_ATTRS));
             conv.attrs = JsonUtils.fromJsonString(attrs, HashMap.class);
@@ -138,24 +152,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return convs;
     }
 
-    public void insertAndIncrtUnread(IMConv conv) {
+    public void insertAndIncrtUnread(IMConv conv, boolean isResetUnreadCount) {
         String attrs = JsonUtils.toJsonString(conv.attrs);
         SQLiteDatabase db = this.getWritableDatabase();
 
         if (insertedConvIds.contains(conv.convId)) {
             StringBuilder sql = new StringBuilder();
-            sql.append("update ").append(TConversation.TABLE_NAME).append(" set ")
-               .append(TConversation.COLUMN_UNREAD_COUNT).append(" = 1 + ").append(TConversation.COLUMN_UNREAD_COUNT).append(", ")
-               .append(TConversation.COLUMN_LATEST_MSG_TIME).append(" = ?, ")
-               .append(TConversation.COLUMN_ATTRS).append(" = ? ")
-               .append(" WHERE ").append(TConversation.COLUMN_CONV_ID).append(" = ?");
+            sql.append("update ").append(TConversation.TABLE_NAME).append(" set ");
+            if (isResetUnreadCount) {
+                sql.append(TConversation.COLUMN_UNREAD_COUNT).append(" = 0,");
+            } else {
+                sql.append(TConversation.COLUMN_UNREAD_COUNT).append(" = 1 + ")
+                        .append(TConversation.COLUMN_UNREAD_COUNT).append(", ");
+            }
+            sql.append(TConversation.COLUMN_LATEST_MSG_TIME).append(" = ?, ")
+                    .append(TConversation.COLUMN_ATTRS).append(" = ? ")
+                    .append(" WHERE ").append(TConversation.COLUMN_CONV_ID).append(" = ?");
             db.execSQL(sql.toString(), new Object[]{conv.latestMsgTime, attrs, conv.convId});
         } else {
             ContentValues insertValues = new ContentValues();
             insertValues.put(TConversation.COLUMN_CONV_ID, conv.convId);
             insertValues.put(TConversation.COLUMN_UNREAD_COUNT, 1);
             insertValues.put(TConversation.COLUMN_LATEST_MSG_TIME, conv.latestMsgTime);
-            insertValues.put(TConversation.COLUMN_ORDER_PRIORITY, conv.orderPriority);;
+            insertValues.put(TConversation.COLUMN_ORDER_PRIORITY, conv.orderPriority);
+            ;
             insertValues.put(TConversation.COLUMN_CONV_TYPE, conv.type.ordinal());
             insertValues.put(TConversation.COLUMN_ATTRS, attrs);
             db.insert(TConversation.TABLE_NAME, null, insertValues);
@@ -172,10 +192,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     *
-     * @param convId 会话id
+     * @param convId       会话id
      * @param fromRecordId 开始记录id，返回比该id小的消息。值大于0时参数才生效。
-     * @param limit 最多返回记录数量。值大于0时参数才生效。
+     * @param limit        最多返回记录数量。值大于0时参数才生效。
      * @return 不为空。数据按照recordId从大到小排序，即最新的消息排在前面
      */
     public List<IMMsg> loadMsgs(String convId, long fromRecordId, int limit) {
@@ -189,7 +208,8 @@ public class DBHelper extends SQLiteOpenHelper {
         StringBuilder sql = new StringBuilder();
         sql.append("select * from ").append(tableName);
 
-        if (fromRecordId > 0) sql.append(" where " + TMsgHistory.COLUMN_RECORD_ID + " < ").append(fromRecordId);
+        if (fromRecordId > 0)
+            sql.append(" where " + TMsgHistory.COLUMN_RECORD_ID + " < ").append(fromRecordId);
 
         sql.append(" order by ").append(TMsgHistory.COLUMN_RECORD_ID).append(" desc");
 
@@ -200,7 +220,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(sql.toString(), null); // 直接sql效率没传入参数的好，就这样
         while (cursor.moveToNext()) {
             IMMsg msg = new IMMsg(convId);
-            msgs.add(msg);
+//            msgs.add(msg);
 
             msg.recordId = cursor.getLong(cursor.getColumnIndex(TMsgHistory.COLUMN_RECORD_ID));
             msg.msgId = cursor.getString(cursor.getColumnIndex(TMsgHistory.COLUMN_MSG_ID));
@@ -213,12 +233,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
             String attrs = cursor.getString(cursor.getColumnIndex(TMsgHistory.COLUMN_ATTRS));
             msg.attrs = JsonUtils.fromJsonString(attrs, HashMap.class);
+
+            msgs.add(msg);
         }
 
         return msgs;
     }
 
     public void insertMsg(IMMsg msg) {
+
         this.ensureMsgHistoryTable(msg.convId);
 
         String tableName = this.genMsgHistoryTableName(msg.convId);
@@ -310,5 +333,5 @@ public class DBHelper extends SQLiteOpenHelper {
         public final static String COLUMN_LATEST_MSG_TIME = "latest_msg_time";
         public final static String COLUMN_ATTRS = "attrs";
     }
-    
+
 }

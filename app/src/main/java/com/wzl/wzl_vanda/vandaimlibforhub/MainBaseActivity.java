@@ -45,13 +45,9 @@ import de.greenrobot.event.EventBus;
  */
 public class MainBaseActivity extends AppCompatActivity implements OnClickListener {
 
+    public static MainBaseActivity instance;
 
-    @Bind(R.id.container)
-    FrameLayout container;
-
-    private static MainBaseActivity instance;
-
-    private MessageFragment mMessageFragment;
+    public MessageFragment mMessageFragment;
     private static int flag = 0;
 
     public static void goMainActivityFromActivity(Activity fromActivity) {
@@ -62,14 +58,16 @@ public class MainBaseActivity extends AppCompatActivity implements OnClickListen
             @Override
             public void done(AVIMClient avimClient, AVException e) {
                 if (instance != null && instance.mMessageFragment != null) {
-                    if (BuildConfig.DEBUG){
-                        Log.e("MF Re-> ",""+flag);
+                    if (BuildConfig.DEBUG) {
+                        Log.e("MF Re-> ", "" + flag);
                     }
-                    instance.mMessageFragment.refresh();
+                    instance.mMessageFragment.refreshData();
+                    instance.mMessageFragment.firstCacheConversation();
+//                    instance.mMessageFragment.refresh();
                 } else {
                     flag = 1;
-                    if (BuildConfig.DEBUG){
-                        Log.e("MF 2 Re-> ",""+flag);
+                    if (BuildConfig.DEBUG) {
+                        Log.e("MF 2 Re-> ", "" + flag);
                     }
                 }
 
@@ -88,11 +86,6 @@ public class MainBaseActivity extends AppCompatActivity implements OnClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus eventBus = EventBus.getDefault();
-//        ChatManager chatManager = ChatManager.getInstance();
-//        if (AVUser.getCurrentUser() != null) {
-//            chatManager.setupDatabaseWithSelfId(AVUser.getCurrentUser().getObjectId());//Utils.getLocalMacAddress(this));
-//            chatManager.openClientWithSelfId(AVUser.getCurrentUser().getObjectId(), null);
-//        }
         if (savedInstanceState == null) {
             mMessageFragment = MessageFragment.newInstance(flag);
             getSupportFragmentManager().beginTransaction()
@@ -104,7 +97,7 @@ public class MainBaseActivity extends AppCompatActivity implements OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ChatManager.getInstance().getImClient().close(null);
+//        ChatManager.getInstance().getImClient().close(null);
     }
 
 

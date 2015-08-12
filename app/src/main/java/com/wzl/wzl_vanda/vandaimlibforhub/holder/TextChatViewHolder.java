@@ -34,7 +34,6 @@ public class TextChatViewHolder extends ChatViewBaseHolder {
     public static TextChatViewHolder build(ViewGroup viewGroup) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.chat_layout_textview, null);
-
         return new TextChatViewHolder(v);
     }
 
@@ -46,7 +45,6 @@ public class TextChatViewHolder extends ChatViewBaseHolder {
     @Override
     public void onBindData(Context context, IMMsg msg) {
         idChatTextview.setText(msg.text);
-
         idChatTextviewStatusOk.setVisibility(View.GONE);
         idChatTextviewStatusFail.setVisibility(View.GONE);
     }

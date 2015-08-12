@@ -5,11 +5,6 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Adapter class for managing data binders by mapping enum view type and data binder
- *
- * Created by yqritc on 2015/03/25.
- */
 public abstract class EnumMapBindAdapter<B,E extends Enum<E>> extends DataBindAdapter<B> {
 
     private Map<E, DataBinder> mBinderMap = new HashMap<>();

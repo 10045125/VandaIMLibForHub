@@ -13,12 +13,16 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.bumptech.glide.Glide;
 import com.rockerhieu.emojicon.EmojiconTextView;
 import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.EmotionHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.UserInfo;
@@ -54,11 +58,10 @@ public class ChatOtherTextViewBinder2 extends DataBinder<ChatOtherTextViewBinder
     @Override
     public void bindViewHolder(final ViewHolder holder, int position) {
 
-        MessageItem item = (MessageItem) getDataBindAdapter().get(position);
-        AVIMTextMessage textMsg = (AVIMTextMessage) item.avimTypedMessage;
-        holder.idChatTextview.setText(textMsg.getText());
+        IMMsg imMsg = ((ChatEnumMapAdater)getDataBindAdapter()).get(position);
+        holder.idChatTextview.setText(imMsg.text);
 
-        Map<String,Object> map = textMsg.getAttrs();
+        Map<String,Object> map = imMsg.getAttrs();
         if (map != null && map.get(MessageAgent.MAPKEY) != null) {
             Log.e("map", "" + map.get(MessageAgent.MAPKEY));
             UserService.findUserInConversationAllInfo((String) map.get(MessageAgent.MAPKEY), new FindCallback<AVObject>() {
@@ -66,9 +69,9 @@ public class ChatOtherTextViewBinder2 extends DataBinder<ChatOtherTextViewBinder
                 @Override
                 public void done(List<AVObject> list, AVException e) {
                     if (list != null && list.size() > 0) {
-                        Picasso.with(getDataBindAdapter().context)
+                        Glide.with(ChatFragment.instance)
                                 .load(list.get(0).getAVFile(User.AVATAR).getUrl())
-                                .tag(getDataBindAdapter().context)
+//                                .tag(getDataBindAdapter().context)
                                 .into(holder.idChatTextIvBg);
                         holder.idChatTextTvName.setText(list.get(0).getString(User.NICKNAME));
                     }

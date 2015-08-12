@@ -1,6 +1,7 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -18,10 +19,14 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
 import com.wzl.wzl_vanda.vandaimlibforhub.MainActivity;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
 import com.wzl.wzl_vanda.vandaimlibforhub.db.RoomsTable;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ConversationType;
-import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageEvent;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Room;
+import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Utils;
 
 import java.util.ArrayList;
@@ -37,10 +42,11 @@ import de.greenrobot.event.EventBus;
 public class ChatManager extends AVIMClientEventHandler {
 
     public static final String KEY_UPDATED_AT = "updatedAt";
-    public static final String LOGTAG = "leanchatlib";
+    public static final String LOGTAG = "HUB";
     private static ChatManager chatManager;
 
     private static Context context;
+    private MessageHelp messageHelp;
 
     private static ConnectionListener defaultConnectListener = new ConnectionListener() {
         @Override
@@ -116,12 +122,8 @@ public class ChatManager extends AVIMClientEventHandler {
     public void init(Context context) {
         this.context = context;
         messageHandler = new MessageHandler();
+        messageHelp = new MessageHelp();
         AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, messageHandler);
-//    try {
-//      AVIMMessageManager.registerAVIMMessageType(AVIMUserInfoMessage.class);
-//    } catch (AVException e) {
-//      e.printStackTrace();
-//    }
         AVIMClient.setClientEventHandler(this);
         //签名
         //AVIMClient.setSignatureFactory(new SignatureFactory());
@@ -137,7 +139,8 @@ public class ChatManager extends AVIMClientEventHandler {
             return;
         }
         setupDatabase = true;
-        roomsTable = RoomsTable.getCurrentUserInstance();
+//        roomsTable = RoomsTable.getCurrentUserInstance();
+        DBHelper.getCurrentUserInstance();
     }
 
     public void setConnectionListener(ConnectionListener connectionListener) {
@@ -166,11 +169,11 @@ public class ChatManager extends AVIMClientEventHandler {
                 if (e != null) {
                     connect = false;
                     if (connectionListener != null)
-                    connectionListener.onConnectionChanged(connect);
+                        connectionListener.onConnectionChanged(connect);
                 } else {
                     connect = true;
                     if (connectionListener != null)
-                    connectionListener.onConnectionChanged(connect);
+                        connectionListener.onConnectionChanged(connect);
                 }
                 if (callback != null) {
                     callback.done(client, e);
@@ -183,37 +186,53 @@ public class ChatManager extends AVIMClientEventHandler {
         if (message.getMessageId() == null) {
             throw new NullPointerException("message id is null");
         }
-        MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Receipt);
-        eventBus.post(messageEvent);
+//        MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Receipt);
+//        eventBus.post(messageEvent);
+//        DBHelper.getInstance().insertMsg(imMsg);
     }
 
     private void onMessage(final AVIMTypedMessage message, final AVIMConversation conversation) {
-        Utils.log("receive message=" + message.getContent());
+        if (BuildConfig.DEBUG)
+            Utils.log("receive message=" + message.getContent());
         if (message.getMessageId() == null) {
-            if (BuildConfig.DEBUG){
+            if (BuildConfig.DEBUG) {
                 Utils.log("message id is null");
             }
             return;
-//            throw new NullPointerException("message id is null");
         }
         if (!ConversationHelper.isValidConversation(conversation)) {
-            if (BuildConfig.DEBUG){
+            if (BuildConfig.DEBUG) {
                 Utils.log("receive msg from invalid conversation");
             }
             return;
-//            throw new IllegalStateException("receive msg from invalid conversation");
         }
         if (lookUpConversationById(conversation.getConversationId()) == null) {
             registerConversation(conversation);
         }
-        roomsTable.insertRoom(message.getConversationId());
-        roomsTable.increaseUnreadCount(message.getConversationId());
-        MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Come);
-        eventBus.post(messageEvent);
+
+        CacheService.registerConvIfNone(conversation);
+
+        IMMsg imMsg = messageHelp.convert2IMMsg(imClient, message);
+
+        if (BuildConfig.DEBUG)
+            Log.i("IM", "onMessage, imMsg:" + imMsg);
+
+        DBHelper.getInstance().insertMsg(imMsg);
+
+        IMConv conv = messageHelp.genConvData(conversation, imMsg);
+
         if (selfId != null && MainActivity.getCurrentChattingConvid() == null || !MainActivity.getCurrentChattingConvid().equals(message
                 .getConversationId())) {
-            chatManagerAdapter.shouldShowNotification(context, selfId, conversation, message);
+            chatManagerAdapter.shouldShowNotification(context, selfId, conversation, imMsg);
+            DBHelper.getInstance().insertAndIncrtUnread(conv, false);
+        } else {
+            DBHelper.getInstance().insertAndIncrtUnread(conv, true);
         }
+
+        if (MessageHelp.getMessageFragment() != null) {
+            MessageHelp.getMessageFragment().refreshData();
+        }
+        eventBus.post(imMsg);
     }
 
 
@@ -285,7 +304,7 @@ public class ChatManager extends AVIMClientEventHandler {
         @Override
         public void onMessage(AVIMTypedMessage message, AVIMConversation conversation,
                               AVIMClient client) {
-            Utils.log("message content ->> "+message.getContent());
+            Utils.log("message content ->> " + message.getContent());
             if (client.getClientId().equals(chatManager.getSelfId())) {
                 chatManager.onMessage(message, conversation);
             } else {
@@ -297,7 +316,7 @@ public class ChatManager extends AVIMClientEventHandler {
         @Override
         public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation,
                                      AVIMClient client) {
-            Utils.log("onMessageReceipt content ->> "+message.getContent());
+            Utils.log("onMessageReceipt content ->> " + message.getContent());
             if (client.getClientId().equals(chatManager.getSelfId())) {
                 chatManager.onMessageReceipt(message, conversation);
             } else {

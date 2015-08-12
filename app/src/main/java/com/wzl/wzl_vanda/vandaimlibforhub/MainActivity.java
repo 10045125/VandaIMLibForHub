@@ -1,6 +1,7 @@
 package com.wzl.wzl_vanda.vandaimlibforhub;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -24,8 +25,10 @@ import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumCursorMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.fragment.MyEmojiconsFragment;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Constant;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
@@ -42,7 +45,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements DialogInterface.OnClickListener ,EmojiconGridFragment.OnEmojiconClickedListener, MyEmojiconsFragment.OnEmojiconBackspaceClickedListener {
+public class MainActivity extends AppCompatActivity implements DialogInterface.OnClickListener, EmojiconGridFragment.OnEmojiconClickedListener, MyEmojiconsFragment.OnEmojiconBackspaceClickedListener {
 
     @Bind(R.id.id_main_title)
     TextView idMainTitle;
@@ -50,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     TextView idSecondTitle;
     @Bind(R.id.id_main_title_people)
     TextView idMainTitlePeople;
-    private ItemsDataHelper mDataHelper;
-    private SampleEnumCursorMapAdapter mSampleEnumCursorMapAdapter;
 
     private AVIMConversation conversation;
     private ConversationManager conversationManager;
@@ -60,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private static String currentChattingConvid;
     private ChatFragment chatFragment;
 
-
-//    private List<AVUser> mAVList = new ArrayList<>();
 
     public static String getCurrentChattingConvid() {
         return currentChattingConvid;
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     }
 
 
-    private void initActionBar(){
+    private void initActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -98,22 +97,32 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         getSupportActionBar().setCustomView(R.layout.title_center);
     }
 
-    private void initData(){
+    private void initData() {
         conversationManager = ConversationManager.getInstance();
         String convid = getIntent().getStringExtra("ConvId");
         String title = getIntent().getStringExtra("ConvName");
+
         idSecondTitle.setText(title);
-        conversation = ChatManager.getInstance().lookUpConversationById(convid);
+//        conversation = ChatManager.getInstance().lookUpConversationById(convid);
+        conversation = CacheService.lookupConv(convid);
         getMebers();
+
+        boolean isNotification = getIntent().getBooleanExtra("Notification", false);
+        if (isNotification) {
+            DBHelper.getInstance().resetConvUnreadCount(convid);
+            if (MessageHelp.getMessageFragment() != null) {
+                MessageHelp.getMessageFragment().refreshData();
+            }
+        }
     }
 
-    private void getMebers(){
-        new AsyncTask<Void,Void,List<AVUser>>(){
+    private void getMebers() {
+        new AsyncTask<Void, Void, List<AVUser>>() {
             @Override
-            protected List<AVUser>  doInBackground(Void... params) {
+            protected List<AVUser> doInBackground(Void... params) {
                 List<AVUser> users = null;
                 try {
-                     users = CacheService.findUsers(conversation.getMembers());
+                    users = CacheService.findUsers(conversation.getMembers());
                 } catch (AVException e) {
                     e.printStackTrace();
                 }
@@ -126,16 +135,16 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 //                mAVList.addAll(users);
                 String titlePeople = "";
                 if (users != null)
-                for (int i = 0;i<users.size();i++){
-                    if (i > 0 && i< users.size()){
-                        titlePeople += "、"+users.get(i).getUsername();
-                    }else{
-                        titlePeople += users.get(i).getUsername();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (i > 0 && i < users.size()) {
+                            titlePeople += "、" + users.get(i).getUsername();
+                        } else {
+                            titlePeople += users.get(i).getUsername();
+                        }
                     }
-                }
 
-                if (users.size() > 0){
-                    idMainTitlePeople.setText("("+users.size()+"人)");
+                if (users.size() > 0) {
+                    idMainTitlePeople.setText("(" + users.size() + "人)");
                 }
 
                 idMainTitle.setText(titlePeople);
@@ -161,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_addm, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -172,8 +181,15 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             tag = 2;
             createInputDialog("添加成员", "添加");
             return true;
-        }else if (id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             finish();
+        }
+
+        if (id == R.id.action_what) {
+            startActivity(new Intent(this, ChatSetActivity.class));
+//            if (chatFragment != null){
+//                chatFragment.onRefresh();
+//            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -295,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     @Override
     public void onEmojiconBackspaceClicked(View v) {
-        if (chatFragment != null){
+        if (chatFragment != null) {
             chatFragment.onEmojiconBackspaceClicked(v);
         }
     }
@@ -303,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onEmojiconClicked(Emojicon emojicon) {
 
-        if (chatFragment != null){
+        if (chatFragment != null) {
             chatFragment.onEmojiconClicked(emojicon);
         }
     }

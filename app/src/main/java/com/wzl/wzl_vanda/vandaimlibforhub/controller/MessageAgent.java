@@ -11,7 +11,13 @@ import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
+import com.wzl.wzl_vanda.vandaimlibforhub.MainBaseActivity;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
 import com.wzl.wzl_vanda.vandaimlibforhub.db.RoomsTable;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.PathUtils;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.PhotoUtils;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Utils;
@@ -34,14 +40,17 @@ public class MessageAgent {
     private String objectId;
     private AVIMConversation conversation;
     private ChatManager chatManager;
+
+    private MessageHelp messageHelp;
+
     private SendCallback sendCallback = new SendCallback() {
         @Override
-        public void onError(AVIMTypedMessage message, Exception e) {
+        public void onError(IMMsg message, Exception e) {
 
         }
 
         @Override
-        public void onSuccess(AVIMTypedMessage message) {
+        public void onSuccess(IMMsg message) {
 
         }
     };
@@ -49,17 +58,18 @@ public class MessageAgent {
     public MessageAgent(AVIMConversation conversation, String objectId) {
         this.conversation = conversation;
         this.objectId = objectId;
+        messageHelp = new MessageHelp();
         map.clear();
         if (objectId != null && !objectId.equals("")) {
-            Log.e("objectId -> ",""+objectId);
+            Log.e("objectId -> ", "" + objectId);
             map.put(MAPKEY, (Object) this.objectId);
         }
         chatManager = ChatManager.getInstance();
     }
 
-    public void addNicknameMap(String nickname){
+    public void addNicknameMap(String nickname) {
         map.remove(NICKNAME);
-        map.put(NICKNAME,nickname);
+        map.put(NICKNAME, nickname);
     }
 
     public void setSendCallback(SendCallback sendCallback) {
@@ -82,11 +92,19 @@ public class MessageAgent {
                     }
                 }
                 if (callback != null) {
+                    IMMsg imMsg = messageHelp.convert2IMMsg(ChatManager.getInstance().getImClient(), msg);
+                    if (BuildConfig.DEBUG)
+                        Log.i("IM", "onMessage, imMsg:" + imMsg);
+                    DBHelper.getInstance().insertMsg(imMsg);
+                    IMConv conv = messageHelp.genConvData(conversation, imMsg);
+                    DBHelper.getInstance().insertAndIncrtUnread(conv, true);
+                    if(MessageHelp.getMessageFragment() != null){
+                        MessageHelp.getMessageFragment().refreshData();
+                    }
                     if (e != null) {
-                        callback.onError(msg, e);
+                        callback.onError(imMsg, e);
                     } else {
-                        RoomsTable.getCurrentUserInstance().insertRoom(conversation.getConversationId());
-                        callback.onSuccess(msg);
+                        callback.onSuccess(imMsg);
                     }
                 }
             }
@@ -97,10 +115,14 @@ public class MessageAgent {
         conversation.sendMessage(msg, AVIMConversation.RECEIPT_MESSAGE_FLAG, new AVIMConversationCallback() {
             @Override
             public void done(AVException e) {
+                IMMsg imMsg = messageHelp.convert2IMMsg(ChatManager.getInstance().getImClient(), msg);
+                if (BuildConfig.DEBUG)
+                    Log.i("IM", "onMessage, imMsg:" + imMsg);
+                DBHelper.getInstance().insertMsg(imMsg);
                 if (e != null) {
-                    sendCallback.onError(msg, e);
+                    sendCallback.onError(imMsg, e);
                 } else {
-                    sendCallback.onSuccess(msg);
+                    sendCallback.onSuccess(imMsg);
                 }
             }
         });
@@ -146,9 +168,9 @@ public class MessageAgent {
 
     public interface SendCallback {
 
-        void onError(AVIMTypedMessage message, Exception e);
+        void onError(IMMsg message, Exception e);
 
-        void onSuccess(AVIMTypedMessage message);
+        void onSuccess(IMMsg message);
 
     }
 }

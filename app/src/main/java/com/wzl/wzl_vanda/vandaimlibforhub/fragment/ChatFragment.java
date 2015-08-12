@@ -18,6 +18,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -38,12 +41,19 @@ import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.wangjie.androidbucket.support.recyclerview.layoutmanager.ABaseLinearLayoutManager;
 import com.wangjie.androidbucket.support.recyclerview.listener.OnRecyclerViewScrollLocationListener;
+import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
+import com.wzl.wzl_vanda.vandaimlibforhub.ChatSetActivity;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumCursorMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsgType;
+import com.wzl.wzl_vanda.vandaimlibforhub.holder.ChatViewType;
+import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ForMeConversationInfo;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageEvent;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
@@ -70,7 +80,11 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by wzl_vanda on 15/7/28.
  */
-public class ChatFragment extends Fragment implements TextView.OnEditorActionListener{
+public class ChatFragment extends Fragment implements TextView.OnEditorActionListener {
+
+    public static ChatFragment instance;
+
+    private static boolean isFirst = true;
 
     private static final int TAKE_CAMERA_REQUEST = 2;
     private static final int GALLERY_REQUEST = 0;
@@ -103,7 +117,7 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
     RecordButton idRecordBtn;
     @Bind(R.id.id_turnToTextBtn)
     Button idTurnToTextBtn;
-//    @Bind(R.id.id_emotionPager)
+    //    @Bind(R.id.id_emotionPager)
 //    ViewPager idEmotionPager;
     @Bind(R.id.id_chatEmotionLayout)
     LinearLayout idChatEmotionLayout;
@@ -120,13 +134,13 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
     @Bind(R.id.id_fl_emojicons_content)
     FrameLayout idFlEmojiconsContent;
 
-    private ItemsDataHelper mDataHelper;
-    private SampleEnumCursorMapAdapter mSampleEnumCursorMapAdapter;
-    private SampleEnumMapAdapter mSampleEnumMapAdapter;
+    private ChatEnumMapAdater mChatEnumMapAdater;
     private ABaseLinearLayoutManager mLinearLayoutManager;
     private AVIMConversation conversation;
     private String convid;
     private ForMeConversationInfo forMeConversationInfo;
+    private boolean isRefreshFormore = true;
+    private boolean isLoadComplete = false;
 
     protected MessageAgent messageAgent;
     protected MessageAgent.SendCallback defaultSendCallback = new DefaultSendCallback();
@@ -134,15 +148,19 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
     class DefaultSendCallback implements MessageAgent.SendCallback {
 
         @Override
-        public void onError(AVIMTypedMessage message, Exception e) {
-            Utils.log("fail");
+        public void onError(IMMsg message, Exception e) {
+            if (BuildConfig.DEBUG)
+                Utils.log("fail");
             addMessageAndScroll(message);
+            recyclerviewMain.scrollToPosition(mChatEnumMapAdater.getItemCount()-1);
         }
 
         @Override
-        public void onSuccess(AVIMTypedMessage message) {
-            Utils.log("success");
+        public void onSuccess(IMMsg message) {
+            if (BuildConfig.DEBUG)
+                Utils.log("success");
             addMessageAndScroll(message);
+            recyclerviewMain.scrollToPosition(mChatEnumMapAdater.getItemCount()-1);
         }
     }
 
@@ -152,17 +170,18 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         }
     }
 
-    private void addMessageAndScroll(AVIMTypedMessage message) {
-        mSampleEnumMapAdapter.add(new MessageItem(message));//0,
-        mSampleEnumMapAdapter.notifyDataSetChanged();
-        recyclerviewMain.scrollToPosition(mSampleEnumMapAdapter.getItemCount() - 1);
+    private void addMessageAndScroll(IMMsg message) {
+        mChatEnumMapAdater.add(message);//0,
+//        mChatEnumMapAdater.notifyDataSetChanged();
+//        recyclerviewMain.scrollToPosition(mChatEnumMapAdater.getItemCount() - 1);
     }
 
+
     public abstract class CacheMessagesTask extends AsyncTask<Void, Void, Void> {
-        private List<AVIMTypedMessage> messages;
+        private List<IMMsg> messages;
         private Exception e;
 
-        public CacheMessagesTask(Context context, List<AVIMTypedMessage> messages) {
+        public CacheMessagesTask(Context context, List<IMMsg> messages) {
             this.messages = messages;
         }
 
@@ -170,17 +189,16 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         protected Void doInBackground(Void... voids) {
             try {
                 Set<String> userIds = new HashSet<String>();
-                for (AVIMTypedMessage msg : messages) {
-                    AVIMReservedMessageType type = AVIMReservedMessageType.getAVIMReservedMessageType(msg.getMessageType());
-                    if (type == AVIMReservedMessageType.AudioMessageType) {
-                        File file = new File(MessageHelper.getFilePath(msg));
+                for (IMMsg msg : messages) {
+                    IMMsgType msgType = msg.type;
+                    if (msgType == IMMsgType.AUDIO_MINE || msgType == IMMsgType.AUDIO_OTHERS) {
+                        File file = new File(MessageHelper.getFilePathForIMMsg(msg));
                         if (!file.exists()) {
-                            AVIMAudioMessage audioMsg = (AVIMAudioMessage) msg;
-                            String url = audioMsg.getFileUrl();
+                            String url = msg.getUrl();
                             Utils.downloadFileIfNotExists(url, file);
                         }
                     }
-                    userIds.add(msg.getFrom());
+                    userIds.add(msg.senderId);
                 }
                 if (ChatManager.getInstance().getChatManagerAdapter() == null) {
                     throw new NullPointerException("chat user factory is null");
@@ -199,7 +217,7 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
             }
         }
 
-        abstract void onSucceed(List<AVIMTypedMessage> messages);
+        abstract void onSucceed(List<IMMsg> messages);
     }
 
 
@@ -213,26 +231,19 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         }
     }
 
-    public void onEvent(MessageEvent messageEvent) {
-        final AVIMTypedMessage message = messageEvent.getMessage();
-        if (message.getConversationId().equals(conversation
-                .getConversationId())) {
-            if (messageEvent.getType() == MessageEvent.Type.Come) {
-                new CacheMessagesTask(getActivity(), Arrays.asList(message)) {
+    public void onEvent(final IMMsg imMsg) {
+
+        if (imMsg != null && imMsg.convId != null && imMsg.convId.equals(conversation.getConversationId())) {
+
+            if (imMsg.senderId != ChatManager.getInstance().getSelfId()) {
+                new CacheMessagesTask(getActivity(), Arrays.asList(imMsg)) {
                     @Override
-                    void onSucceed(List<AVIMTypedMessage> messages) {
-                        addMessageAndScroll(message);
+                    void onSucceed(List<IMMsg> messages) {
+                        addMessageAndScroll(imMsg);
                     }
                 }.execute();
-            } else if (messageEvent.getType() == MessageEvent.Type.Receipt) {
-                Utils.log("receipt");
-//                AVIMTypedMessage originMessage = findMessage(message.getMessageId());
-//                if (originMessage != null) {
-//                    originMessage.setMessageStatus(message.getMessageStatus());
-//                    originMessage.setReceiptTimestamp(message.getReceiptTimestamp());
-//                    adapter.notifyDataSetChanged();
-//                }
             }
+
         }
     }
 
@@ -244,12 +255,12 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         eventBus = EventBus.getDefault();
         eventBus.register(this);
-        mDataHelper = new ItemsDataHelper(getActivity());
-        mDataHelper.clearAll();
         convid = getActivity().getIntent().getStringExtra("ConvId");
-        conversation = ChatManager.getInstance().lookUpConversationById(convid);
+//        conversation = ChatManager.getInstance().lookUpConversationById(convid);
+        conversation = CacheService.lookupConv(convid);
         forMeConversationInfo = CacheService.getMeConversationObjectId(convid);
         messageAgent = new MessageAgent(conversation, forMeConversationInfo != null ? forMeConversationInfo.objectId : "");
         messageAgent.setSendCallback(defaultSendCallback);
@@ -274,39 +285,39 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
 
     private void initData() {
         setEmojiconFragment(false);
-        mSampleEnumMapAdapter = new SampleEnumMapAdapter(getActivity(), convid);
-        mSampleEnumMapAdapter.faceUrlForMe = forMeConversationInfo != null ? forMeConversationInfo.url : "http://";
-        mSampleEnumMapAdapter.nickNameForMe = forMeConversationInfo != null ? forMeConversationInfo.nickname : "...";
+        mChatEnumMapAdater = new ChatEnumMapAdater(getActivity(), convid);
+        mChatEnumMapAdater.faceUrlForMe = forMeConversationInfo != null ? forMeConversationInfo.url : "http://";
+        mChatEnumMapAdater.nickNameForMe = forMeConversationInfo != null ? forMeConversationInfo.nickname : "...";
         recyclerviewMain.setHasFixedSize(true);
         recyclerviewMain.setItemAnimator(null);//new DefaultItemAnimator());
-        recyclerviewMain.setAdapter(mSampleEnumMapAdapter);
+        recyclerviewMain.setAdapter(mChatEnumMapAdater);
         mLinearLayoutManager = new ABaseLinearLayoutManager(getActivity()) {
-            @Override
-            protected int getExtraLayoutSpace(RecyclerView.State state) {
-                return 1200;
-            }
+//            @Override
+//            protected int getExtraLayoutSpace(RecyclerView.State state) {
+//                return 1200;
+//            }
         };
 //        mLinearLayoutManager.setReverseLayout(true);
         mLinearLayoutManager.setOnRecyclerViewScrollLocationListener(recyclerviewMain, new OnRecyclerViewScrollLocationListener() {
             @Override
             public void onTopWhenScrollIdle(RecyclerView recyclerView) {
-
+                if (isRefreshFormore)
+                    onRefresh();
             }
 
             @Override
             public void onBottomWhenScrollIdle(RecyclerView recyclerView) {
-                onRefresh();
+
             }
         });
 
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerviewMain.setLayoutManager(mLinearLayoutManager);
-        onRefresh();
-//        recyclerviewMain.scrollToPosition(mSampleEnumMapAdapter.getItemCount() - 1);
-//        idChatTextedit.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI|EditorInfo.IME_ACTION_SEND);
         idChatTextedit.setOnEditorActionListener(this);
+        onRefresh();
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -314,10 +325,46 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_what:
+                startActivity(new Intent(getActivity(), ChatSetActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void onRefresh() {
+        isRefreshFormore = false;
+        if (!isLoadComplete) {
+            Log.e("Complete -> ", "" + isLoadComplete);
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(Void... voids) {
+                    return mChatEnumMapAdater.loadMoreMsgsFromDB();
+                }
+
+
+                @Override
+                protected void onPostExecute(Boolean isLoadComplete) {
+                    isRefreshFormore = true;
+                    ChatFragment.this.isLoadComplete = isLoadComplete;
+                    if (isFirst){
+                        recyclerviewMain.scrollToPosition(mChatEnumMapAdater.getItemCount()-1);
+                        isFirst = false;
+                    }
+                }
+            }.execute();
+        }
+    }
+
+
     private void setEmojiconFragment(boolean useSystemDefault) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.id_fl_emojicons_content,MyEmojiconsFragment.newInstance(useSystemDefault))
+                .replace(R.id.id_fl_emojicons_content, MyEmojiconsFragment.newInstance(useSystemDefault))
                 .commit();
     }
 
@@ -330,50 +377,11 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         MyEmojiconsFragment.backspace(idChatTextedit);
     }
 
-    private int offset = 0;
-    private int limit = 12;
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-    }
-
-    private int mFirstCompletelyVisibleItemPosition = 0;
-
-
-    public void onRefresh() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-
-                mSampleEnumMapAdapter.addAll(query());
-//                mSampleEnumMapAdapter.addAllTop(query());
-//                List<DemoItem> list = query();
-//                if (list != null)
-//                    for (int i = 0; i < list.size(); i++) {
-//                        mSampleEnumMapAdapter.notifyItemInserted(0);
-//                        mSampleEnumMapAdapter.add(0, list.get(i));
-//                        mSampleEnumMapAdapter.notifyItemRangeChanged(0, mSampleEnumMapAdapter.getItemCount());
-//                    }
-            }
-        });
-    }
-
-    public List<DemoItem> query() {
-        DemoItem item = null;
-        List<DemoItem> list = new ArrayList<>();
-        Cursor cursor;
-        cursor = mDataHelper.queryoffsetLimit(offset, limit, null, null,
-                null, null);
-        while (cursor.moveToNext()) {
-            item = DemoItem.fromCursor(cursor);
-            list.add(item);
-        }
-        offset += limit;
-        cursor.close();
-        return list;
     }
 
 
@@ -407,23 +415,12 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         return true;
     }
 
-//    private void sendMessage(String message){
-//        AVIMMessage mAVIMMessage = new AVIMMessage();
-//        mAVIMMessage.setContent(message);
-//        conversation.sendMessage(mAVIMMessage, new AVIMConversationCallback() {
-//            @Override
-//            public void done(AVException e) {
-//
-//            }
-//        });
-//    }
 
     public void initRecordBtn() {
         idRecordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime());
         idRecordBtn.setRecordEventListener(new RecordButton.RecordEventListener() {
             @Override
             public void onFinishedRecord(final String audioPath, int secs) {
-//        LogUtils.d("audioPath = ", audioPath);
                 messageAgent.sendAudio(audioPath);
             }
 
@@ -437,9 +434,6 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
 
     @OnClick(R.id.id_showVoiceBtn)
     protected void onShowAudioLayout() {
-//        idChatTextLayout.setVisibility(View.GONE);
-//        idChatRecordLayout.setVisibility(View.VISIBLE);
-//        idChatEmotionLayout.setVisibility(View.GONE);
         idShowVoiceBtn.setVisibility(View.GONE);
         idChatTextedit.setVisibility(View.GONE);
 

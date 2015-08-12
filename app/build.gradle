@@ -30,11 +30,13 @@ android {
 }
 
 dependencies {
+
     //    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':AndroidBucket-master')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
@@ -50,4 +52,6 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile project(':viewtypelibrary')
     compile project(':Emojilibrary')
+    compile project(':switchButton')
+    compile files('libs/nineoldandroids-2.4.0.jar')
 }

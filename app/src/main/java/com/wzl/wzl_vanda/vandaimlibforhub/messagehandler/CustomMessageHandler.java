@@ -36,7 +36,7 @@ public class CustomMessageHandler extends AVIMTypedMessageHandler {
         DBHelper.getInstance().insertMsg(imMsg);
 
         IMConv conv = this.genConvData(conversation, imMsg);
-        DBHelper.getInstance().insertAndIncrtUnread(conv);
+//        DBHelper.getInstance().insertAndIncrtUnread(conv);
 
         this.eventBus.post(imMsg);
         this.eventBus.post(conv);

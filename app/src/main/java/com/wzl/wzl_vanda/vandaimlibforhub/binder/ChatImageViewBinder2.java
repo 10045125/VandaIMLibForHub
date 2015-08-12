@@ -12,9 +12,13 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
@@ -49,17 +53,18 @@ public class ChatImageViewBinder2 extends DataBinder<ChatImageViewBinder2.ViewHo
     @Override
     public void bindViewHolder(final ViewHolder holder, int position) {
 
-        SampleEnumMapAdapter sampleEnumMapAdapter = (SampleEnumMapAdapter) getDataBindAdapter();
-        holder.idChatTextTvName.setText(sampleEnumMapAdapter.nickNameForMe);
-        Picasso.with(getDataBindAdapter().context)
-                .load(sampleEnumMapAdapter.faceUrlForMe)
-                .tag(getDataBindAdapter().context)
+        ChatEnumMapAdater chatEnumMapAdater = (ChatEnumMapAdater) getDataBindAdapter();
+        holder.idChatTextTvName.setText(chatEnumMapAdater.nickNameForMe);
+        Glide.with(ChatFragment.instance)
+                .load(chatEnumMapAdater.faceUrlForMe)
+//                .tag(getDataBindAdapter().context)
                 .into(holder.idChatTextIvBg);
-        AVIMImageMessage msg = (AVIMImageMessage) ((MessageItem) sampleEnumMapAdapter.get(position)).avimTypedMessage;
+        IMMsg imMsg = chatEnumMapAdater.get(position);
 
-        Picasso.with(getDataBindAdapter().context)
-                .load(msg.getFileUrl())
-                .tag(getDataBindAdapter().context)
+        Glide.with(getDataBindAdapter().context)
+                .load(imMsg.getUrl())
+//                .tag(getDataBindAdapter().context)
+                .override(400,400)
                 .into(holder.mImageView);
 
         /*try {

@@ -11,10 +11,14 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
+import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
+import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
@@ -49,20 +53,20 @@ public class ChatOtherSoundBinder2 extends DataBinder<ChatOtherSoundBinder2.View
 
     @Override
     public void bindViewHolder(final ViewHolder holder, int position) {
-        AVIMTypedMessage msg = ((MessageItem)getDataBindAdapter().get(position)).avimTypedMessage;
-        initPlayBtn(msg, holder.idPlayButton);
+        IMMsg imMsg = ((ChatEnumMapAdater)getDataBindAdapter()).get(position);
+        initPlayBtn(imMsg, holder.idPlayButton);
 
 
-        Map<String,Object> map = ((AVIMAudioMessage)msg).getAttrs();
+        Map<String,Object> map = imMsg.getAttrs();
         if (map != null && map.get(MessageAgent.MAPKEY) != null)
             UserService.findUserInConversationAllInfo((String)map.get(MessageAgent.MAPKEY), new FindCallback<AVObject>() {
 
                 @Override
                 public void done(List<AVObject> list, AVException e) {
                     if (list != null && list.size() > 0) {
-                        Picasso.with(getDataBindAdapter().context)
+                        Glide.with(ChatFragment.instance)
                                 .load(list.get(0).getAVFile(User.AVATAR).getUrl())
-                                .tag(getDataBindAdapter().context)
+//                                .tag(getDataBindAdapter().context)
                                 .into(holder.idChatTextIvBg);
                         holder.idChatTextTvName.setText(list.get(0).getString(User.NICKNAME));
                     }
@@ -89,9 +93,9 @@ public class ChatOtherSoundBinder2 extends DataBinder<ChatOtherSoundBinder2.View
         }*/
     }
 
-    private void initPlayBtn(AVIMTypedMessage msg, PlayButton playBtn) {
+    private void initPlayBtn(IMMsg msg, PlayButton playBtn) {
         playBtn.setLeftSide(true);
-        playBtn.setPath(MessageHelper.getFilePath(msg));
+        playBtn.setPath(MessageHelper.getFilePathForIMMsg(msg));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

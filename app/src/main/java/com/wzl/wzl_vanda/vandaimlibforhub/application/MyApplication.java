@@ -54,15 +54,15 @@ public class MyApplication extends AppApplication {
         // 节省流量
         AVOSCloud.setLastModifyEnabled(true);
         AVOSCloud.setDebugLogEnabled(false);
-        AVIMClient.setClientEventHandler(new ClientEventHandler());
-        AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new CustomMessageHandler());
+//        AVIMClient.setClientEventHandler(new ClientEventHandler());
+//        AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new CustomMessageHandler());
 //        AVObject.registerSubclass(AddRequest.class);
 
 //        login("Androidstudiowzl", "10045125");
 
 //        AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 //        final AVIMClient imClient = AVIMClient.getInstance(Utils.getLocalMacAddress(this));
-//        initChatManager();
+        initChatManager();
 //        ChatManager.getInstance().openClientWithSelfId(Utils.getLocalMacAddress(getContext()),null);
       /*  ChatManager.getInstance().getImClient().open(new AVIMClientCallback() {
             @Override

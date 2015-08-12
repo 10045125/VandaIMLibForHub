@@ -25,6 +25,7 @@ import com.wangjie.androidbucket.support.recyclerview.listener.OnRecyclerViewScr
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.MessageListMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
+import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageEvent;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Room;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
@@ -48,6 +49,7 @@ import de.greenrobot.event.EventBus;
  */
 public class MessageFragment extends Fragment implements ChatManager.ConnectionListener {
 
+    public static MessageFragment instance;
 
     @Bind(R.id.id_recyclerview_message)
     RecyclerView idRecyclerviewMessage;
@@ -71,6 +73,7 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         Bundle bundle = getArguments();
         if (bundle != null)
             flag = bundle.getInt("flag");
@@ -100,6 +103,9 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
     public void onResume() {
         super.onResume();
         eventBus.register(this);
+        if (mMessageListMapAdapter != null){
+            mMessageListMapAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -114,8 +120,48 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
         System.out.println("size onE->>>> " + mMessageListMapAdapter.size());
     }
 
+
     public void onEvent(TextView event) {
-        refresh();
+//        refresh();
+    }
+
+
+    public void onEventMainThread(IMConv newConv) {
+        refreshData();
+    }
+
+    public void refreshData() {
+        mMessageListMapAdapter.refreshFromDatabase();
+        mMessageListMapAdapter.notifyDataSetChanged();
+    }
+
+    public void firstCacheConversation() {
+        final ArrayList<String> ids = new ArrayList<>();
+        for (IMConv imConv : mMessageListMapAdapter.getList()) {
+            ids.add(imConv.convId);
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    CacheService.cacheConvs(ids, new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVException e) {
+                        }
+                    });
+                } catch (AVException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
     }
 
     private void initData() {
@@ -146,15 +192,10 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
         idRecyclerviewMessage.setLayoutManager(mABaseLinearLayoutManager);
         idRecyclerviewMessage.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
         if (flag == 1) {
-            refresh();
-        }
-
-//        if (chatManager.getImClient() != null){
-//            Log.e("ImClient -> ","not null");
+            refreshData();
+            firstCacheConversation();
 //            refresh();
-//        }else{
-//            Log.e("ImClient -> ","null");
-//        }
+        }
     }
 
 
@@ -172,14 +213,6 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
             protected Void doInBackground(Void... voids) {
 
                 if (AVUser.getCurrentUser() != null) {
-//                        final CountDownLatch latch = new CountDownLatch(1);
-//                    try {
-//                        Log.e("size -> ", "" + conversationManager.findAndCacheRooms().size());
-//                    } catch (AVException e) {
-//                        e.printStackTrace();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
                     conversationManager.findGroupConversationsIncludeMe(new AVIMConversationQueryCallback() {
                         @Override
                         public void done(List<AVIMConversation> list, AVException e) {
@@ -195,18 +228,6 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
                                     room.setConversationId(mAVIMConversation.getConversationId());
 
                                     String name = mAVIMConversation.getName();
-//                                    List<String> list1 = mAVIMConversation.getMembers();
-//                                    if (list1 != null) {
-//                                        int count = list1.size();
-//                                        for (int i = 0; i < count; i++) {
-//                                            if (i > 0 && i < count - 1) {
-//                                                name += "、" + list1.get(i);
-//                                            } else {
-//                                                name += list1.get(i);
-//                                            }
-//                                        }
-//                                    }
-                                    Log.e("name-> ", "" + name);
                                     room.setGroupName(name);
                                     try {
                                         room.setLastMessage(ConversationManager.getLastMessage(mAVIMConversation));
@@ -217,7 +238,7 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
                                     }
                                     rooms.add(room);
                                 }
-                                mMessageListMapAdapter.addAll(rooms);
+//                                mMessageListMapAdapter.addAll(rooms);
                             } else
                                 Log.e("List<AVIM ->> ", "" + e.toString());
                         }
@@ -255,20 +276,6 @@ public class MessageFragment extends Fragment implements ChatManager.ConnectionL
     @Override
     public void onConnectionChanged(boolean connect) {
 
-    }
-
-    private void loadItems() {
-//        ArrayList<Room> demoItems = new ArrayList<>();
-//        int count = 0;
-//        for (int i = 0; i <= 2; i++) {
-//            count++;
-//            demoItems.add(new Room(i, "me " + i, 1, "http://img3.fengniao.com/forum/attachpics/855/31/34166186.jpg"));
-//            if (count == 6) {
-//                count = 0;
-//            }
-//        }
-//        mMessageListMapAdapter.addAll(demoItems);
-//        mMessageListMapAdapter.notifyDataSetChanged();
     }
 
 }

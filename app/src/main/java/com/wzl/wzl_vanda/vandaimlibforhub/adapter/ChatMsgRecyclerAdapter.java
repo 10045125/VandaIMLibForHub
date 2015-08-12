@@ -37,7 +37,6 @@ public class ChatMsgRecyclerAdapter extends RecyclerView.Adapter<ChatViewBaseHol
         this.mContext = context;
         this.mDbHelper = dbHelper;
         this.mConvId = convId;
-
         this.mMsgs = new ArrayList<>();
     }
 

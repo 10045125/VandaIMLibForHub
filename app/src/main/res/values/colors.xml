@@ -35,4 +35,10 @@
     <color name="fab_color_shadow">#44000000</color>
 
     <color name="color_chat_people_name">#666666</color>
+
+    <color name="color_chat_set_sec_text">#929292</color>
+
+    <color name="color_chat_line">#ececec</color>
+
+    <color name="color_message_list_circle">#ef3b3b</color>
 </resources>
