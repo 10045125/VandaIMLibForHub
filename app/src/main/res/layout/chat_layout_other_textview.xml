@@ -44,8 +44,9 @@
             android:layout_gravity="center"
             android:background="@mipmap/ic_chat_pop_other"
             android:gravity="center"
-            android:minHeight="48dp"
+            android:minHeight="@dimen/dimen_chat_item_min_height"
             android:orientation="vertical">
+            <!--android:minHeight="48dp"-->
 
             <!--com.wzl.wzl_vanda.vandaimlibforhub.view.JustifyTextView-->
             <com.rockerhieu.emojicon.EmojiconTextView

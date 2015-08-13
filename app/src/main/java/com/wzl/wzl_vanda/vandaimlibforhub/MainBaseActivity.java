@@ -1,40 +1,33 @@
 package com.wzl.wzl_vanda.vandaimlibforhub;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.fragment.MessageFragment;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
-import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
-import com.wzl.wzl_vanda.vandaimlibforhub.service.UserService;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,56 +41,40 @@ public class MainBaseActivity extends AppCompatActivity implements OnClickListen
     public static MainBaseActivity instance;
 
     public MessageFragment mMessageFragment;
-    private static int flag = 0;
-
-    public static void goMainActivityFromActivity(Activity fromActivity) {
-
-        ChatManager chatManager = ChatManager.getInstance();
-        chatManager.setupDatabaseWithSelfId(AVUser.getCurrentUser().getObjectId());
-        chatManager.openClientWithSelfId(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
-            @Override
-            public void done(AVIMClient avimClient, AVException e) {
-                if (instance != null && instance.mMessageFragment != null) {
-                    if (BuildConfig.DEBUG) {
-                        Log.e("MF Re-> ", "" + flag);
-                    }
-                    instance.mMessageFragment.refreshData();
-                    instance.mMessageFragment.firstCacheConversation();
-//                    instance.mMessageFragment.refresh();
-                } else {
-                    flag = 1;
-                    if (BuildConfig.DEBUG) {
-                        Log.e("MF 2 Re-> ", "" + flag);
-                    }
-                }
-
-                CacheService.registerForMeConversationInfo(AVUser.getCurrentUser().getObjectId());
-            }
-        });
-        Intent intent = new Intent(fromActivity, MainBaseActivity.class);
-        fromActivity.startActivity(intent);
-
-    }
+    @Bind(R.id.id_main_title)
+    TextView idMainTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
         setContentView(R.layout.activity_main);
+        initActionBar();
         ButterKnife.bind(this);
+        idMainTitle.setText("消息");
         EventBus eventBus = EventBus.getDefault();
         if (savedInstanceState == null) {
-            mMessageFragment = MessageFragment.newInstance(flag);
+            mMessageFragment = MessageFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, mMessageFragment)
                     .commit();
         }
     }
 
+    private void initActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.message_title_center);
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        ChatManager.getInstance().getImClient().close(null);
     }
 
 

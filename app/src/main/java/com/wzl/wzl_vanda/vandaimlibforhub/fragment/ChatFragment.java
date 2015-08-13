@@ -4,12 +4,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,8 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.wangjie.androidbucket.support.recyclerview.layoutmanager.ABaseLinearLayoutManager;
 import com.wangjie.androidbucket.support.recyclerview.listener.OnRecyclerViewScrollLocationListener;
@@ -45,25 +37,17 @@ import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
 import com.wzl.wzl_vanda.vandaimlibforhub.ChatSetActivity;
 import com.wzl.wzl_vanda.vandaimlibforhub.R;
 import com.wzl.wzl_vanda.vandaimlibforhub.adapter.ChatEnumMapAdater;
-import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumCursorMapAdapter;
-import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageAgent;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsgType;
-import com.wzl.wzl_vanda.vandaimlibforhub.holder.ChatViewType;
-import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ForMeConversationInfo;
-import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageEvent;
-import com.wzl.wzl_vanda.vandaimlibforhub.model.MessageItem;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.PathUtils;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.ProviderPathUtils;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Utils;
 import com.wzl.wzl_vanda.vandaimlibforhub.view.RecordButton;
-import com.wzl.wzl_vanda.viewtypelibrary.bean.DemoItem;
-import com.wzl.wzl_vanda.viewtypelibrary.db.ItemsDataHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -292,10 +276,10 @@ public class ChatFragment extends Fragment implements TextView.OnEditorActionLis
         recyclerviewMain.setItemAnimator(null);//new DefaultItemAnimator());
         recyclerviewMain.setAdapter(mChatEnumMapAdater);
         mLinearLayoutManager = new ABaseLinearLayoutManager(getActivity()) {
-//            @Override
-//            protected int getExtraLayoutSpace(RecyclerView.State state) {
-//                return 1200;
-//            }
+            @Override
+            protected int getExtraLayoutSpace(RecyclerView.State state) {
+                return 1600;
+            }
         };
 //        mLinearLayoutManager.setReverseLayout(true);
         mLinearLayoutManager.setOnRecyclerViewScrollLocationListener(recyclerviewMain, new OnRecyclerViewScrollLocationListener() {

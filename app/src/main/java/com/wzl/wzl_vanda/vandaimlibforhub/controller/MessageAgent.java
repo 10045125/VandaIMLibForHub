@@ -12,11 +12,9 @@ import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
-import com.wzl.wzl_vanda.vandaimlibforhub.MainBaseActivity;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
-import com.wzl.wzl_vanda.vandaimlibforhub.db.RoomsTable;
 import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.PathUtils;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.PhotoUtils;
@@ -26,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by lzw on 14/11/23.

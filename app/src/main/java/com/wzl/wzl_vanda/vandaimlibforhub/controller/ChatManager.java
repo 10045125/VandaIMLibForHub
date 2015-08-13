@@ -1,9 +1,11 @@
 package com.wzl.wzl_vanda.vandaimlibforhub.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMClientEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -14,6 +16,7 @@ import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
@@ -22,10 +25,8 @@ import com.wzl.wzl_vanda.vandaimlibforhub.MainActivity;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMConv;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
-import com.wzl.wzl_vanda.vandaimlibforhub.db.RoomsTable;
 import com.wzl.wzl_vanda.vandaimlibforhub.messagehelp.MessageHelp;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ConversationType;
-import com.wzl.wzl_vanda.vandaimlibforhub.model.Room;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Utils;
 
@@ -64,7 +65,6 @@ public class ChatManager extends AVIMClientEventHandler {
     private String selfId;
     private boolean connect = false;
     private MessageHandler messageHandler;  //接受消息的handler
-    private RoomsTable roomsTable;
     private EventBus eventBus = EventBus.getDefault();
     private ChatManagerAdapter chatManagerAdapter;
     private static boolean debugEnabled;
@@ -91,12 +91,12 @@ public class ChatManager extends AVIMClientEventHandler {
         ChatManager.debugEnabled = debugEnabled;
     }
 
-    // fetchConversation
+
     public void fetchConversationWithUserId(String userId, final AVIMConversationCreatedCallback callback) {
         final List<String> members = new ArrayList<>();
         members.add(userId);
         members.add(selfId);
-        AVIMConversationQuery query = imClient.getQuery();
+        AVIMConversationQuery query = getImClient().getQuery();
         query.withMembers(members);
         query.whereEqualTo(ConversationType.ATTR_TYPE_KEY, ConversationType.Single.getValue());
         query.orderByDescending(KEY_UPDATED_AT);
@@ -111,7 +111,7 @@ public class ChatManager extends AVIMClientEventHandler {
                     } else {
                         Map<String, Object> attrs = new HashMap<>();
                         attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-                        imClient.createConversation(members, attrs, callback);
+                        getImClient().createConversation(members, attrs, callback);
                     }
                 }
             }
@@ -119,6 +119,10 @@ public class ChatManager extends AVIMClientEventHandler {
     }
 
 
+    /**
+     * @param context
+     * 初始化消息的回调
+     */
     public void init(Context context) {
         this.context = context;
         messageHandler = new MessageHandler();
@@ -129,32 +133,56 @@ public class ChatManager extends AVIMClientEventHandler {
         //AVIMClient.setSignatureFactory(new SignatureFactory());
     }
 
+    /**
+     * @param eventHandler
+     * 成员变化的事件处理回调
+     */
     public void setConversationEventHandler(AVIMConversationEventHandler eventHandler) {
         AVIMMessageManager.setConversationEventHandler(eventHandler);
     }
 
+    /**
+     * @param selfId
+     * 确保数据库实例被创建
+     */
     public void setupDatabaseWithSelfId(String selfId) {
         this.selfId = selfId;
         if (setupDatabase) {
             return;
         }
         setupDatabase = true;
-//        roomsTable = RoomsTable.getCurrentUserInstance();
         DBHelper.getCurrentUserInstance();
     }
 
+    /**
+     * @param connectionListener
+     * 网络连接状态的监听改变
+     */
     public void setConnectionListener(ConnectionListener connectionListener) {
         this.connectionListener = connectionListener;
     }
 
     public AVIMClient getImClient() {
+        if (imClient == null){
+            openClientWithSelfId(this.selfId,null);
+        }
         return imClient;
     }
 
+    /**
+     * @return
+     * 获取客户点的id
+     */
     public String getSelfId() {
         return selfId;
     }
 
+    /**
+     * @param selfId
+     * @param callback
+     *
+     * 创建client实例，这个实例必须是最先创建出来的，后续的所有操作都和这个client有关
+     */
     public void openClientWithSelfId(String selfId, final AVIMClientCallback callback) {
         if (this.selfId == null) {
             throw new IllegalStateException("please call setupDatabaseWithSelfId() first");
@@ -166,6 +194,11 @@ public class ChatManager extends AVIMClientEventHandler {
         imClient.open(new AVIMClientCallback() {
             @Override
             public void done(AVIMClient client, AVException e) {
+
+                //查询数据库的会话，为会话创建会话实例
+                createConveration();
+                CacheService.registerForMeConversationInfo(AVUser.getCurrentUser().getObjectId());
+
                 if (e != null) {
                     connect = false;
                     if (connectionListener != null)
@@ -182,15 +215,55 @@ public class ChatManager extends AVIMClientEventHandler {
         });
     }
 
+    /**
+     * 为数据库里面的会话创建出会话实例，在Application创建
+     */
+    private void createConveration(){
+
+        final ArrayList<String> ids = new ArrayList<>();
+        for (IMConv imConv : DBHelper.getCurrentUserInstance().loadConvs()) {
+            ids.add(imConv.convId);
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    CacheService.cacheConvs(ids, new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVException e) {
+                        }
+                    });
+                } catch (AVException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
+    }
+
+    /**
+     * @param message
+     * @param conv
+     * 这个是发送消息后的回执信息
+     */
     private void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conv) {
         if (message.getMessageId() == null) {
             throw new NullPointerException("message id is null");
         }
-//        MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Receipt);
-//        eventBus.post(messageEvent);
-//        DBHelper.getInstance().insertMsg(imMsg);
     }
 
+    /**
+     * @param message
+     * @param conversation
+     * 接收消息
+     */
     private void onMessage(final AVIMTypedMessage message, final AVIMConversation conversation) {
         if (BuildConfig.DEBUG)
             Utils.log("receive message=" + message.getContent());
@@ -212,7 +285,7 @@ public class ChatManager extends AVIMClientEventHandler {
 
         CacheService.registerConvIfNone(conversation);
 
-        IMMsg imMsg = messageHelp.convert2IMMsg(imClient, message);
+        IMMsg imMsg = messageHelp.convert2IMMsg(getImClient(), message);
 
         if (BuildConfig.DEBUG)
             Log.i("IM", "onMessage, imMsg:" + imMsg);
@@ -236,8 +309,12 @@ public class ChatManager extends AVIMClientEventHandler {
     }
 
 
+    /**
+     * @param callback
+     * 注销客户端
+     */
     public void closeWithCallback(final AVIMClientCallback callback) {
-        imClient.close(new AVIMClientCallback() {
+        getImClient().close(new AVIMClientCallback() {
 
             @Override
             public void done(AVIMClient client, AVException e) {
@@ -253,16 +330,29 @@ public class ChatManager extends AVIMClientEventHandler {
         selfId = null;
     }
 
+    /**
+     * @return
+     * 会话查询对象
+     */
+
     public AVIMConversationQuery getQuery() {
-        return imClient.getQuery();
+        return getImClient().getQuery();
     }
 
+    /**
+     * @param client
+     * 连接状态
+     */
     @Override
     public void onConnectionPaused(AVIMClient client) {
         connect = false;
         connectionListener.onConnectionChanged(connect);
     }
 
+    /**
+     * @param client
+     * 恢复
+     */
     @Override
     public void onConnectionResume(AVIMClient client) {
         connect = true;
@@ -273,6 +363,10 @@ public class ChatManager extends AVIMClientEventHandler {
         return connect;
     }
 
+    /**
+     * @param conversation
+     * 缓存会话实例，这个其实已经在CacheService中已经存在
+     */
     //cache
     public void registerConversation(AVIMConversation conversation) {
         cachedConversations.put(conversation.getConversationId(), conversation);
@@ -290,10 +384,6 @@ public class ChatManager extends AVIMClientEventHandler {
         this.chatManagerAdapter = chatManagerAdapter;
     }
 
-    //ChatUser
-    public List<Room> findRecentRooms() {
-        return RoomsTable.getCurrentUserInstance().selectRooms();
-    }
 
     public interface ConnectionListener {
         void onConnectionChanged(boolean connect);
@@ -304,8 +394,8 @@ public class ChatManager extends AVIMClientEventHandler {
         @Override
         public void onMessage(AVIMTypedMessage message, AVIMConversation conversation,
                               AVIMClient client) {
-            Utils.log("message content ->> " + message.getContent());
             if (client.getClientId().equals(chatManager.getSelfId())) {
+                chatManager.imClient = client;
                 chatManager.onMessage(message, conversation);
             } else {
                 // 收到其它的client的消息，可能是上一次别的client登录未正确关闭，这里关边掉。
@@ -316,9 +406,9 @@ public class ChatManager extends AVIMClientEventHandler {
         @Override
         public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation,
                                      AVIMClient client) {
-            Utils.log("onMessageReceipt content ->> " + message.getContent());
             if (client.getClientId().equals(chatManager.getSelfId())) {
                 chatManager.onMessageReceipt(message, conversation);
+
             } else {
                 client.close(null);
             }

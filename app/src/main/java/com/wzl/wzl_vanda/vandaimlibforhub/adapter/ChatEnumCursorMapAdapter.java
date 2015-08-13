@@ -10,7 +10,6 @@ import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherSoundBinder;
 import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherTextViewBinder;
 import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatSoundBinder;
 import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatTextViewBinder;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.NullViewBinder;
 import com.wzl.wzl_vanda.viewtypelibrary.EnumMapCursorBindAdapter;
 import com.wzl.wzl_vanda.viewtypelibrary.bean.DemoItem;
 
@@ -18,22 +17,21 @@ import com.wzl.wzl_vanda.viewtypelibrary.bean.DemoItem;
 /**
  * Created by wzl_vanda on 15/7/28.
  */
-public class SampleEnumCursorMapAdapter extends EnumMapCursorBindAdapter<SampleEnumCursorMapAdapter.SampleViewType> {
+public class ChatEnumCursorMapAdapter extends EnumMapCursorBindAdapter<ChatEnumCursorMapAdapter.SampleViewType> {
 
 
     enum SampleViewType {
         SAMPLE1, SAMPLE2, SAMPLE3, SAMPLE4, SAMPLE5, SAMPLE6, SAMPLE0
     }
 
-    public SampleEnumCursorMapAdapter(Context context) {
+    public ChatEnumCursorMapAdapter(Context context) {
         super(context, null);
-        putBinder(SampleViewType.SAMPLE1, new ChatTextViewBinder(this));
-        putBinder(SampleViewType.SAMPLE2, new ChatImageViewBinder(this));
-        putBinder(SampleViewType.SAMPLE3, new ChatOtherTextViewBinder(this));
-        putBinder(SampleViewType.SAMPLE4, new ChatOtherImageViewBinder(this));
-        putBinder(SampleViewType.SAMPLE5, new ChatSoundBinder(this));
-        putBinder(SampleViewType.SAMPLE6, new ChatOtherSoundBinder(this));
-        putBinder(SampleViewType.SAMPLE0, new NullViewBinder(this));
+//        putBinder(SampleViewType.SAMPLE1, new ChatTextViewBinder(this));
+//        putBinder(SampleViewType.SAMPLE2, new ChatImageViewBinder(this));
+//        putBinder(SampleViewType.SAMPLE3, new ChatOtherTextViewBinder(this));
+//        putBinder(SampleViewType.SAMPLE4, new ChatOtherImageViewBinder(this));
+//        putBinder(SampleViewType.SAMPLE5, new ChatSoundBinder(this));
+//        putBinder(SampleViewType.SAMPLE6, new ChatOtherSoundBinder(this));
 
     }
 

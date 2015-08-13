@@ -11,6 +11,7 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
+import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.Constant;
 import com.wzl.wzl_vanda.vandaimlibforhub.model.ForMeConversationInfo;
 
@@ -88,8 +89,33 @@ public class CacheService {
         }
     }
 
-    public static AVIMConversation lookupConv(String convid) {
+    public static AVIMConversation lookupConv(final String convid) {
+
+        AVIMConversation avimConversation = cachedConvs.get(convid);
+        if (avimConversation == null) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(convid);
+            ConversationManager.getInstance().findConversationsByConversationIds(list, new AVIMConversationQueryCallback() {
+                @Override
+                public void done(List<AVIMConversation> list, AVException e) {
+                    if (list != null)
+                        for (AVIMConversation conv : list) {
+                            registerConv(conv);
+                        }
+                }
+            });
+        }
         return cachedConvs.get(convid);
+    }
+
+    public static void lookupConvCallBack(final String convid, AVIMConversationQueryCallback callback) {
+
+        AVIMConversation avimConversation = cachedConvs.get(convid);
+        if (avimConversation == null) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(convid);
+            ConversationManager.getInstance().findConversationsByConversationIds(list, callback);
+        }
     }
 
     public static void registerConvs(List<AVIMConversation> convs) {

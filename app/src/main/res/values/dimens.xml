@@ -34,4 +34,6 @@
     <dimen name="dimen_margin">15dp</dimen>
 
     <dimen name="dimen_chat_set_image_size">60dp</dimen>
+
+    <dimen name="dimen_chat_item_min_height">32dp</dimen>
 </resources>

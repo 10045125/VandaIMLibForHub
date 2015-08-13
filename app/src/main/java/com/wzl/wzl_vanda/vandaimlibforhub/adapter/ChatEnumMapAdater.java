@@ -4,13 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.wzl.wzl_vanda.vandaimlibforhub.BuildConfig;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatImageViewBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherImageViewBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherSoundBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherTextViewBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatSoundBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatTextViewBinder2;
-import com.wzl.wzl_vanda.vandaimlibforhub.binder.NullViewBinder2;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatImageViewBinder;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherImageViewBinder;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherSoundBinder;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatOtherTextViewBinder;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatSoundBinder;
+import com.wzl.wzl_vanda.vandaimlibforhub.binder.ChatTextViewBinder;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.MessageHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.IMMsg;
@@ -55,13 +54,12 @@ public class ChatEnumMapAdater extends EnumMapBindAdapter<IMMsg, ChatEnumMapAdat
         super(context);
         this.conversationId = conversationId;
         mDbHelper = DBHelper.getCurrentUserInstance();
-        putBinder(ChatViewType.ToText, new ChatTextViewBinder2(this));
-        putBinder(ChatViewType.ComeText, new ChatOtherTextViewBinder2(this));
-        putBinder(ChatViewType.ToImage, new ChatImageViewBinder2(this));
-        putBinder(ChatViewType.ComeImage, new ChatOtherImageViewBinder2(this));
-        putBinder(ChatViewType.ToAudio, new ChatSoundBinder2(this));
-        putBinder(ChatViewType.ComeAudio, new ChatOtherSoundBinder2(this));
-        putBinder(ChatViewType.Null, new NullViewBinder2(this));
+        putBinder(ChatViewType.ToText, new ChatTextViewBinder(this));
+        putBinder(ChatViewType.ComeText, new ChatOtherTextViewBinder(this));
+        putBinder(ChatViewType.ToImage, new ChatImageViewBinder(this));
+        putBinder(ChatViewType.ComeImage, new ChatOtherImageViewBinder(this));
+        putBinder(ChatViewType.ToAudio, new ChatSoundBinder(this));
+        putBinder(ChatViewType.ComeAudio, new ChatOtherSoundBinder(this));
 
     }
 

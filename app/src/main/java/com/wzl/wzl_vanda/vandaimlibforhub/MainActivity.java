@@ -18,12 +18,13 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.emoji.Emojicon;
-import com.wzl.wzl_vanda.vandaimlibforhub.adapter.SampleEnumCursorMapAdapter;
 import com.wzl.wzl_vanda.vandaimlibforhub.controller.ChatManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.data.DBHelper;
 import com.wzl.wzl_vanda.vandaimlibforhub.fragment.ChatFragment;
@@ -34,7 +35,6 @@ import com.wzl.wzl_vanda.vandaimlibforhub.model.User;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.CacheService;
 import com.wzl.wzl_vanda.vandaimlibforhub.service.ConversationManager;
 import com.wzl.wzl_vanda.vandaimlibforhub.utils.Logger;
-import com.wzl.wzl_vanda.viewtypelibrary.db.ItemsDataHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,12 +77,38 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         setContentView(R.layout.activity_main);
         initActionBar();
         ButterKnife.bind(this);
-        initData();
-        if (savedInstanceState == null) {
-            chatFragment = ChatFragment.newInstance();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, chatFragment)
-                    .commit();
+//        createImClient(savedInstanceState);
+        initData(savedInstanceState);
+    }
+
+    private void createImClient(final Bundle savedInstanceState){
+        ChatManager chatManager = ChatManager.getInstance();
+        chatManager.setupDatabaseWithSelfId(AVUser.getCurrentUser().getObjectId());
+        if (chatManager.getImClient() == null) {
+            chatManager.openClientWithSelfId(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
+                @Override
+                public void done(AVIMClient avimClient, AVException e) {
+                    CacheService.registerForMeConversationInfo(AVUser.getCurrentUser().getObjectId());
+                    initData(savedInstanceState);
+                }
+            });
+        }
+    }
+
+
+    private void sureData(final Bundle savedInstanceState) {
+        ChatManager chatManager = ChatManager.getInstance();
+        if (chatManager.getImClient() == null) {
+            chatManager.setupDatabaseWithSelfId(AVUser.getCurrentUser().getObjectId());
+            chatManager.openClientWithSelfId(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
+                @Override
+                public void done(AVIMClient avimClient, AVException e) {
+                    CacheService.registerForMeConversationInfo(AVUser.getCurrentUser().getObjectId());
+                    initData(savedInstanceState);
+                }
+            });
+        }else{
+            initData(savedInstanceState);
         }
     }
 
@@ -97,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         getSupportActionBar().setCustomView(R.layout.title_center);
     }
 
-    private void initData() {
+    private void initData(Bundle savedInstanceState) {
         conversationManager = ConversationManager.getInstance();
         String convid = getIntent().getStringExtra("ConvId");
         String title = getIntent().getStringExtra("ConvName");
@@ -113,6 +139,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             if (MessageHelp.getMessageFragment() != null) {
                 MessageHelp.getMessageFragment().refreshData();
             }
+        }
+
+        if (savedInstanceState == null) {
+            chatFragment = ChatFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, chatFragment)
+                    .commit();
         }
     }
 

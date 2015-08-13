@@ -42,7 +42,7 @@
             android:exported="false" >
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
-
+        <!--.LoginActivity-->
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -58,30 +58,6 @@
             <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
             <!-- </intent-filter> -->
         <!--</activity>-->
-        <activity
-            android:name=".CreateUserActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity
-            android:name=".ChatRoomActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
-
-        <activity
-            android:name=".ShowConversation"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
 
         <activity
             android:name=".MainBaseActivity"
@@ -91,7 +67,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
